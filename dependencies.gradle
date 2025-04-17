@@ -35,5 +35,5 @@
  */
 dependencies {
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.7.4-GTNH:dev")
-    implementation(project.files("libs/liteloader-modified.jar"))
+    implementation(files("libs/liteloader-stub-1.0.0.jar"))
 }

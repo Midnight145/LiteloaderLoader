@@ -1,4 +1,4 @@
-package com.midnight.liteloaderfix.mixin.early.client;
+package com.midnight.liteloaderloader.mixin.early.client;
 
 import net.minecraft.client.main.Main;
 

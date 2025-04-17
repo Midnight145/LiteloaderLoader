@@ -1,4 +1,4 @@
-package com.midnight.liteloaderfix.mixin.early.client;
+package com.midnight.liteloaderloader.mixin.early.client;
 
 import net.minecraft.crash.CrashReport;
 
@@ -14,6 +14,6 @@ public class MixinCrashReport {
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void injectPopulateCrashReport(CallbackInfo ci) {
-        LiteLoader.populateCrashReport(this);
+        LiteLoader.populateCrashReport((CrashReport) (Object) this);
     }
 }

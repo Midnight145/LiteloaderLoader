@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8.5-GTNH",
+  "refmap": "mixins.liteloaderloader.refmap.json",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_8",
+  "package": "com.midnight.liteloaderloader.mixin",
+  "client": [
+    "early.client.MixinCrashReport",
+    "early.client.MixinEntityClientPlayerMP",
+    "early.client.MixinEntityRenderer",
+    "early.client.MixinFramebuffer",
+    "early.client.MixinGuiIngame",
+    "early.client.MixinIntegratedServer",
+    "early.client.MixinMain",
+    "early.client.MixinMinecraft",
+    "early.client.MixinServerConfigurationManager"
+  ]
+}

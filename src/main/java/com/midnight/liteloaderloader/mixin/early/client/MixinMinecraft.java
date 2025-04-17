@@ -1,12 +1,7 @@
-package com.midnight.liteloaderfix.mixin.early.client;
+package com.midnight.liteloaderloader.mixin.early.client;
 
 import java.util.List;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.midnight.liteloaderfix.lib.R;
-import com.mumfrey.liteloader.core.event.EventProxy;
-import com.mumfrey.liteloader.transformers.event.EventInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.client.shader.Framebuffer;
@@ -21,10 +16,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.mumfrey.liteloader.client.CallbackProxyClient;
 import com.mumfrey.liteloader.client.overlays.IMinecraft;
 import com.mumfrey.liteloader.launch.LiteLoaderTweaker;
+import com.mumfrey.liteloader.transformers.event.EventInfo;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft implements IMinecraft {
 
@@ -92,46 +91,41 @@ public abstract class MixinMinecraft implements IMinecraft {
 
     @Inject(method = "startGame", at = @At(value = "TAIL"))
     public void fl$startGame(CallbackInfo ci) {
-        EventInfo event = new EventInfo("onstartupcomplete", this, false);
-        R.of(EventProxy.class).call("$event00000", event);
+        CallbackProxyClient.onStartupComplete(new EventInfo("onstartupcomplete", this, false));
     }
 
-    @Inject(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V", shift = At.Shift.BEFORE))
+    @Inject(
+        method = "runGameLoop",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V"))
     public void fl$runGameLoop(CallbackInfo ci) {
-        EventInfo event = new EventInfo("ontimerupdate", this, false);
-        R.of(EventProxy.class).call("$event00003", event);
+        CallbackProxyClient.onTimerUpdate(new EventInfo("ontimerupdate", this, false));
     }
 
-    @Inject(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lcpw/mods/fml/common/FMLCommonHandler;onRenderTickStart(F)V"), remap = false)
+    @Inject(
+        method = "runGameLoop",
+        at = @At(value = "INVOKE", target = "Lcpw/mods/fml/common/FMLCommonHandler;onRenderTickStart(F)V"),
+        remap = false)
     public void fl$onRenderTickStart(CallbackInfo ci) {
-        EventInfo event = new EventInfo("onrender", this, false);
-        R.of(EventProxy.class).call("$event00004", event);
-        EventInfo event2 = new EventInfo("ontick", this, false);
-        R.of(EventProxy.class).call("$event00005", event2);
+        CallbackProxyClient.onRender(new EventInfo("onrender", this, false));
+        CallbackProxyClient.onTick(new EventInfo("ontick", this, false));
     }
 
-    @WrapOperation(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/shader/Framebuffer;framebufferRender(II)V"))
+    @WrapOperation(
+        method = "runGameLoop",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/shader/Framebuffer;framebufferRender(II)V"))
     public void fl$framebufferRender(Framebuffer instance, int f1, int f2, Operation<Void> original) {
-        R.of(EventProxy.class).call("$event00001", new EventInfo<>("prerenderfbo", this, false));
+        CallbackProxyClient.preRenderFBO(new EventInfo("prerenderfbo", this, false));
         original.call(instance, f1, f2);
-        R.of(EventProxy.class).call("$event00002", new EventInfo<>("postrenderfbo", this, false));
-    }
-
-    @Inject(method = "shutdown", at = @At(value = "HEAD"))
-    public void fl$shutdown(CallbackInfo ci) {
-        EventInfo event = new EventInfo("shutdown", this, true);
-        R.of(EventProxy.class).call("$event00006", event);
+        CallbackProxyClient.postRenderFBO(new EventInfo("postrenderfbo", this, false));
     }
 
     @Inject(method = "updateFramebufferSize", at = @At(value = "HEAD"))
     public void fl$updateFramebufferSize(CallbackInfo ci) {
-        EventInfo event = new EventInfo("updateframebuffersize", this, false);
-        R.of(EventProxy.class).call("$event00007", event);
+        CallbackProxyClient.onResize(new EventInfo("updateframebuffersize", this, false));
     }
 
     @Inject(method = "runTick", at = @At(value = "HEAD"))
     public void fl$runTick(CallbackInfo ci) {
-        EventInfo event = new EventInfo("newtick", this, false);
-        R.of(EventProxy.class).call("$event00008", event);
+        CallbackProxyClient.newTick(new EventInfo("newtick", this, false));
     }
 }
