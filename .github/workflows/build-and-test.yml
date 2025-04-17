@@ -11,5 +11,5 @@ jobs:
   build-and-test:
     uses: GTNewHorizons/GTNH-Actions-Workflows/.github/workflows/build-and-test.yml@master
     with:
-      client-only: false # we aren't bundling real liteloader, trying to runServer will always fail
+      client-only: true # we aren't bundling real liteloader, trying to runServer will always fail
     secrets: inherit
