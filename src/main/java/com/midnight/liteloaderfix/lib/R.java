@@ -1,3 +1,5 @@
+// R is licensed under the CC0 1.0 Universal License. View the original source at https://github.com/MrNavaStar/R
+
 package com.midnight.liteloaderfix.lib;
 
 import java.lang.reflect.Field;
