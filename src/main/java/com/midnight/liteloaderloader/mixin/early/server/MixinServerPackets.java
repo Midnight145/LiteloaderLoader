@@ -1,33 +1,9 @@
-package com.midnight.liteloaderloader.mixin.early.common;
+package com.midnight.liteloaderloader.mixin.early.server;
 
 import net.minecraft.network.INetHandler;
-import net.minecraft.network.handshake.client.C00Handshake;
-import net.minecraft.network.login.client.C00PacketLoginStart;
-import net.minecraft.network.login.client.C01PacketEncryptionResponse;
 import net.minecraft.network.login.server.S00PacketDisconnect;
 import net.minecraft.network.login.server.S01PacketEncryptionRequest;
 import net.minecraft.network.login.server.S02PacketLoginSuccess;
-import net.minecraft.network.play.client.C00PacketKeepAlive;
-import net.minecraft.network.play.client.C01PacketChatMessage;
-import net.minecraft.network.play.client.C02PacketUseEntity;
-import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraft.network.play.client.C07PacketPlayerDigging;
-import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
-import net.minecraft.network.play.client.C09PacketHeldItemChange;
-import net.minecraft.network.play.client.C0APacketAnimation;
-import net.minecraft.network.play.client.C0BPacketEntityAction;
-import net.minecraft.network.play.client.C0CPacketInput;
-import net.minecraft.network.play.client.C0DPacketCloseWindow;
-import net.minecraft.network.play.client.C0EPacketClickWindow;
-import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
-import net.minecraft.network.play.client.C10PacketCreativeInventoryAction;
-import net.minecraft.network.play.client.C11PacketEnchantItem;
-import net.minecraft.network.play.client.C12PacketUpdateSign;
-import net.minecraft.network.play.client.C13PacketPlayerAbilities;
-import net.minecraft.network.play.client.C14PacketTabComplete;
-import net.minecraft.network.play.client.C15PacketClientSettings;
-import net.minecraft.network.play.client.C16PacketClientStatus;
-import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.server.S00PacketKeepAlive;
 import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.network.play.server.S02PacketChat;
@@ -124,16 +100,8 @@ import com.mumfrey.liteloader.core.runtime.Packets;
         S06PacketUpdateHealth.class, S3BPacketScoreboardObjective.class, S3EPacketTeams.class,
         S3CPacketUpdateScore.class, S05PacketSpawnPosition.class, S03PacketTimeUpdate.class, S33PacketUpdateSign.class,
         S0DPacketCollectItem.class, S18PacketEntityTeleport.class, S20PacketEntityProperties.class,
-        S1DPacketEntityEffect.class, C0APacketAnimation.class, C14PacketTabComplete.class, C01PacketChatMessage.class,
-        C16PacketClientStatus.class, C15PacketClientSettings.class, C0FPacketConfirmTransaction.class,
-        C11PacketEnchantItem.class, C0EPacketClickWindow.class, C0DPacketCloseWindow.class,
-        C17PacketCustomPayload.class, C02PacketUseEntity.class, C00PacketKeepAlive.class, C03PacketPlayer.class,
-        C03PacketPlayer.C04PacketPlayerPosition.class, C03PacketPlayer.C06PacketPlayerPosLook.class,
-        C03PacketPlayer.C05PacketPlayerLook.class, C13PacketPlayerAbilities.class, C07PacketPlayerDigging.class,
-        C0BPacketEntityAction.class, C0CPacketInput.class, C09PacketHeldItemChange.class,
-        C10PacketCreativeInventoryAction.class, C12PacketUpdateSign.class, C08PacketPlayerBlockPlacement.class,
-        C00Handshake.class, S02PacketLoginSuccess.class, S01PacketEncryptionRequest.class, S00PacketDisconnect.class,
-        C00PacketLoginStart.class, C01PacketEncryptionResponse.class, S01PacketPong.class, S00PacketServerInfo.class })
+        S1DPacketEntityEffect.class, S02PacketLoginSuccess.class, S01PacketEncryptionRequest.class,
+        S00PacketDisconnect.class, S01PacketPong.class, S00PacketServerInfo.class })
 public class MixinServerPackets {
 
     @Inject(method = "processPacket(Lnet/minecraft/network/INetHandler;)V", at = @At("HEAD"))

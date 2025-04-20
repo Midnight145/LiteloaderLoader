@@ -14,9 +14,10 @@
     "early.client.MixinIntegratedServer",
     "early.client.MixinMain",
     "early.client.MixinMinecraft",
-    "early.client.MixinServerConfigurationManager"
+    "early.client.MixinServerConfigurationManager",
+    "early.client.MixinClientPackets"
   ],
-  "mixins": [
-    "early.common.MixinServerPackets"
+  "server": [
+    "early.server.MixinServerPackets"
   ]
 }

@@ -17,7 +17,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 public class LiteloaderLoader extends DummyModContainer implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
-    public static Logger LOG = LogManager.getLogger("LiteloaderFix");
+    public static Logger LOG = LogManager.getLogger("LiteloaderLoader");
 
     private static ModMetadata metadata = new ModMetadata();
     static {
@@ -29,6 +29,7 @@ public class LiteloaderLoader extends DummyModContainer implements IFMLLoadingPl
 
     public LiteloaderLoader() {
         super(metadata);
+        // LoadingBar.setEnabled(false);
     }
 
     @Override
