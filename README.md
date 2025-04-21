@@ -20,5 +20,4 @@ Additionally, Liteloader uses the old obfuscated mappings, which stops it from b
 ### Not Implemented
 
 - For some reason, Liteloader unsets the final field on all fields in Block.class and Item.class. I'm not sure if this is necessary, so currently I'm not doing it.
-- Currently, Liteloader's progress bar isn't being updated due to it requiring an intensive transformer that isn't implemented yet. This is a low priority as it doesn't affect the functionality of Liteloader.
 - Liteloader standalone installs, as opposed to being loaded via Forge as a mod.
