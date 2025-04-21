@@ -23,6 +23,8 @@ import com.mumfrey.liteloader.client.overlays.IMinecraft;
 import com.mumfrey.liteloader.launch.LiteLoaderTweaker;
 import com.mumfrey.liteloader.transformers.event.EventInfo;
 
+import cpw.mods.fml.common.ProgressManager;
+
 @SuppressWarnings({ "rawtypes", "unchecked" })
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft implements IMinecraft {
@@ -85,8 +87,11 @@ public abstract class MixinMinecraft implements IMinecraft {
             value = "INVOKE",
             target = "Lnet/minecraft/client/renderer/EntityRenderer;<init>(Lnet/minecraft/client/Minecraft;Lnet/minecraft/client/resources/IResourceManager;)V"))
     private void initMods(CallbackInfo ci) {
+        ProgressManager.ProgressBar progressBar = ProgressManager.push("LiteLoader Mod Initialization", 1);
         LiteLoaderTweaker.init();
         LiteLoaderTweaker.postInit();
+        progressBar.step("LiteLoader Mod Initialization Complete");
+        ProgressManager.pop(progressBar);
     }
 
     @Inject(method = "startGame", at = @At(value = "TAIL"))

@@ -35,6 +35,7 @@ public class LiteloaderTransformer implements IClassTransformer {
         toKill.put("ClassOverlayTransformer", Tuple.of("transform", Tuple.of(ARETURN, 3)));
         toKill.put("CrashReportTransformer", Tuple.of("transform", Tuple.of(ARETURN, 3)));
         toKill.put("MinecraftOverlayTransformer", Tuple.of("postOverlayTransform", Tuple.of(RETURN, null)));
+        toKill.put("LiteLoaderBootstrap", Tuple.of("preBeginGame", Tuple.of(RETURN, null)));
     }
 
     @Override
