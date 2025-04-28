@@ -3,10 +3,7 @@ package com.midnight.liteloaderloader.mixin.early.server;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.login.server.S00PacketDisconnect;
 import net.minecraft.network.login.server.S01PacketEncryptionRequest;
-import net.minecraft.network.login.server.S02PacketLoginSuccess;
 import net.minecraft.network.play.server.S00PacketKeepAlive;
-import net.minecraft.network.play.server.S01PacketJoinGame;
-import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.network.play.server.S03PacketTimeUpdate;
 import net.minecraft.network.play.server.S04PacketEntityEquipment;
 import net.minecraft.network.play.server.S05PacketSpawnPosition;
@@ -64,7 +61,6 @@ import net.minecraft.network.play.server.S3BPacketScoreboardObjective;
 import net.minecraft.network.play.server.S3CPacketUpdateScore;
 import net.minecraft.network.play.server.S3DPacketDisplayScoreboard;
 import net.minecraft.network.play.server.S3EPacketTeams;
-import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraft.network.play.server.S40PacketDisconnect;
 import net.minecraft.network.status.server.S00PacketServerInfo;
 import net.minecraft.network.status.server.S01PacketPong;
@@ -84,12 +80,11 @@ import com.mumfrey.liteloader.core.runtime.Packets;
         S2CPacketSpawnGlobalEntity.class, S0FPacketSpawnMob.class, S10PacketSpawnPainting.class,
         S0CPacketSpawnPlayer.class, S0BPacketAnimation.class, S37PacketStatistics.class, S25PacketBlockBreakAnim.class,
         S35PacketUpdateTileEntity.class, S24PacketBlockAction.class, S23PacketBlockChange.class,
-        S3APacketTabComplete.class, S02PacketChat.class, S22PacketMultiBlockChange.class,
-        S32PacketConfirmTransaction.class, S2EPacketCloseWindow.class, S2DPacketOpenWindow.class,
-        S30PacketWindowItems.class, S31PacketWindowProperty.class, S2FPacketSetSlot.class, S3FPacketCustomPayload.class,
-        S40PacketDisconnect.class, S19PacketEntityStatus.class, S27PacketExplosion.class,
-        S2BPacketChangeGameState.class, S00PacketKeepAlive.class, S21PacketChunkData.class, S26PacketMapChunkBulk.class,
-        S28PacketEffect.class, S2APacketParticles.class, S29PacketSoundEffect.class, S01PacketJoinGame.class,
+        S3APacketTabComplete.class, S22PacketMultiBlockChange.class, S32PacketConfirmTransaction.class,
+        S2EPacketCloseWindow.class, S2DPacketOpenWindow.class, S30PacketWindowItems.class,
+        S31PacketWindowProperty.class, S2FPacketSetSlot.class, S40PacketDisconnect.class, S19PacketEntityStatus.class,
+        S27PacketExplosion.class, S2BPacketChangeGameState.class, S00PacketKeepAlive.class, S21PacketChunkData.class,
+        S26PacketMapChunkBulk.class, S28PacketEffect.class, S2APacketParticles.class, S29PacketSoundEffect.class,
         S34PacketMaps.class, S14PacketEntity.class, S14PacketEntity.S15PacketEntityRelMove.class,
         S14PacketEntity.S17PacketEntityLookMove.class, S14PacketEntity.S16PacketEntityLook.class,
         S36PacketSignEditorOpen.class, S39PacketPlayerAbilities.class, S38PacketPlayerListItem.class,
@@ -100,8 +95,8 @@ import com.mumfrey.liteloader.core.runtime.Packets;
         S06PacketUpdateHealth.class, S3BPacketScoreboardObjective.class, S3EPacketTeams.class,
         S3CPacketUpdateScore.class, S05PacketSpawnPosition.class, S03PacketTimeUpdate.class, S33PacketUpdateSign.class,
         S0DPacketCollectItem.class, S18PacketEntityTeleport.class, S20PacketEntityProperties.class,
-        S1DPacketEntityEffect.class, S02PacketLoginSuccess.class, S01PacketEncryptionRequest.class,
-        S00PacketDisconnect.class, S01PacketPong.class, S00PacketServerInfo.class })
+        S1DPacketEntityEffect.class, S01PacketEncryptionRequest.class, S00PacketDisconnect.class, S01PacketPong.class,
+        S00PacketServerInfo.class })
 public class MixinServerPackets {
 
     @Inject(method = "processPacket(Lnet/minecraft/network/INetHandler;)V", at = @At("HEAD"))
