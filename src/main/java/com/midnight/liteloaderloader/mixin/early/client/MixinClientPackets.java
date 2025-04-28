@@ -6,7 +6,6 @@ import net.minecraft.network.login.client.C00PacketLoginStart;
 import net.minecraft.network.login.client.C01PacketEncryptionResponse;
 import net.minecraft.network.login.server.S00PacketDisconnect;
 import net.minecraft.network.login.server.S01PacketEncryptionRequest;
-import net.minecraft.network.login.server.S02PacketLoginSuccess;
 import net.minecraft.network.play.client.C00PacketKeepAlive;
 import net.minecraft.network.play.client.C01PacketChatMessage;
 import net.minecraft.network.play.client.C02PacketUseEntity;
@@ -29,8 +28,6 @@ import net.minecraft.network.play.client.C15PacketClientSettings;
 import net.minecraft.network.play.client.C16PacketClientStatus;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.server.S00PacketKeepAlive;
-import net.minecraft.network.play.server.S01PacketJoinGame;
-import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.network.play.server.S03PacketTimeUpdate;
 import net.minecraft.network.play.server.S04PacketEntityEquipment;
 import net.minecraft.network.play.server.S05PacketSpawnPosition;
@@ -110,12 +107,12 @@ import com.mumfrey.liteloader.core.runtime.Packets;
     C0APacketAnimation.class, C0BPacketEntityAction.class, C0CPacketInput.class, C0DPacketCloseWindow.class,
     C0EPacketClickWindow.class, C0FPacketConfirmTransaction.class, C10PacketCreativeInventoryAction.class,
     C11PacketEnchantItem.class, C12PacketUpdateSign.class, C13PacketPlayerAbilities.class, C14PacketTabComplete.class,
-    C15PacketClientSettings.class, C16PacketClientStatus.class, S02PacketChat.class, S01PacketJoinGame.class,
-    S02PacketLoginSuccess.class, S3FPacketCustomPayload.class, C17PacketCustomPayload.class, C01PacketChatMessage.class,
-    S08PacketPlayerPosLook.class, S0EPacketSpawnObject.class, S11PacketSpawnExperienceOrb.class,
-    S2CPacketSpawnGlobalEntity.class, S0FPacketSpawnMob.class, S10PacketSpawnPainting.class, S0CPacketSpawnPlayer.class,
-    S0BPacketAnimation.class, S37PacketStatistics.class, S25PacketBlockBreakAnim.class, S35PacketUpdateTileEntity.class,
-    S24PacketBlockAction.class, S23PacketBlockChange.class, S3APacketTabComplete.class, S22PacketMultiBlockChange.class,
+    C15PacketClientSettings.class, C16PacketClientStatus.class, S3FPacketCustomPayload.class,
+    C17PacketCustomPayload.class, C01PacketChatMessage.class, S08PacketPlayerPosLook.class, S0EPacketSpawnObject.class,
+    S11PacketSpawnExperienceOrb.class, S2CPacketSpawnGlobalEntity.class, S0FPacketSpawnMob.class,
+    S10PacketSpawnPainting.class, S0CPacketSpawnPlayer.class, S0BPacketAnimation.class, S37PacketStatistics.class,
+    S25PacketBlockBreakAnim.class, S35PacketUpdateTileEntity.class, S24PacketBlockAction.class,
+    S23PacketBlockChange.class, S3APacketTabComplete.class, S22PacketMultiBlockChange.class,
     S32PacketConfirmTransaction.class, S2EPacketCloseWindow.class, S2DPacketOpenWindow.class,
     S30PacketWindowItems.class, S31PacketWindowProperty.class, S2FPacketSetSlot.class, S40PacketDisconnect.class,
     S19PacketEntityStatus.class, S27PacketExplosion.class, S2BPacketChangeGameState.class, S00PacketKeepAlive.class,
