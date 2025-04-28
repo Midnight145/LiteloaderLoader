@@ -1,5 +1,5 @@
 
-package com.midnight.liteloaderloader.mixin.early.common;
+package com.midnight.liteloaderloader.mixin.early.client;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

@@ -16,6 +16,6 @@
     "early.client.MixinMain",
     "early.client.MixinMinecraft",
     "early.client.MixinServerConfigurationManager",
-    "early.common.MixinSpecialPackets"
+    "early.client.MixinSpecialPackets"
   ]
 }
