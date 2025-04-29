@@ -59,7 +59,7 @@ public class LiteloaderTransformer implements IClassTransformer {
         ClassReader classReader = new ClassReader(basicClass);
         ClassWriter classWriter = new ClassWriter(0);
 
-        if (transformedName.endsWith("Event")) {
+        if (getClassName(transformedName).equals("Event")) {
             ClassVisitor second = new EventTransformer(classWriter);
             ClassVisitor first = new LiteloaderClassVisitor(ASM9, second, transformedName);
             classReader.accept(first, 0);
@@ -233,11 +233,12 @@ public class LiteloaderTransformer implements IClassTransformer {
                 index);
         }
 
-        private static String getClassName(String name) {
-            // This will just get the class name from a qualified name, eg.
-            // com.example.TestClass -> TestClass
-            int lastDotIndex = name.lastIndexOf('.');
-            return lastDotIndex == -1 ? name : name.substring(lastDotIndex + 1);
-        }
+    }
+
+    private static String getClassName(String name) {
+        // This will just get the class name from a qualified name, eg.
+        // com.example.TestClass -> TestClass
+        int lastDotIndex = name.lastIndexOf('.');
+        return lastDotIndex == -1 ? name : name.substring(lastDotIndex + 1);
     }
 }
