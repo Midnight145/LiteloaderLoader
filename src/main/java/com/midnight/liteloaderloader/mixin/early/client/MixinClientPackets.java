@@ -6,6 +6,7 @@ import net.minecraft.network.login.client.C00PacketLoginStart;
 import net.minecraft.network.login.client.C01PacketEncryptionResponse;
 import net.minecraft.network.login.server.S00PacketDisconnect;
 import net.minecraft.network.login.server.S01PacketEncryptionRequest;
+import net.minecraft.network.login.server.S02PacketLoginSuccess;
 import net.minecraft.network.play.client.C00PacketKeepAlive;
 import net.minecraft.network.play.client.C01PacketChatMessage;
 import net.minecraft.network.play.client.C02PacketUseEntity;
@@ -28,6 +29,8 @@ import net.minecraft.network.play.client.C15PacketClientSettings;
 import net.minecraft.network.play.client.C16PacketClientStatus;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.server.S00PacketKeepAlive;
+import net.minecraft.network.play.server.S01PacketJoinGame;
+import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.network.play.server.S03PacketTimeUpdate;
 import net.minecraft.network.play.server.S04PacketEntityEquipment;
 import net.minecraft.network.play.server.S05PacketSpawnPosition;
@@ -128,7 +131,7 @@ import com.mumfrey.liteloader.core.runtime.Packets;
     S3CPacketUpdateScore.class, S05PacketSpawnPosition.class, S03PacketTimeUpdate.class, S33PacketUpdateSign.class,
     S0DPacketCollectItem.class, S18PacketEntityTeleport.class, S20PacketEntityProperties.class,
     S1DPacketEntityEffect.class, S01PacketEncryptionRequest.class, S00PacketDisconnect.class, S01PacketPong.class,
-    S00PacketServerInfo.class })
+    S00PacketServerInfo.class, S02PacketLoginSuccess.class, S02PacketChat.class, S01PacketJoinGame.class })
 public class MixinClientPackets {
 
     @Inject(method = "processPacket(Lnet/minecraft/network/INetHandler;)V", at = @At("HEAD"))

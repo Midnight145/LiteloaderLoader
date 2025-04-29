@@ -4,18 +4,18 @@
   "refmap": "mixins.liteloaderloader.refmap.json",
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
-  "package": "com.midnight.liteloaderloader.mixin",
+  "package": "com.midnight.liteloaderloader.mixin.early",
   "client": [
-    "early.client.MixinClientPackets",
-    "early.client.MixinCrashReport",
-    "early.client.MixinEntityClientPlayerMP",
-    "early.client.MixinEntityRenderer",
-    "early.client.MixinFramebuffer",
-    "early.client.MixinGuiIngame",
-    "early.client.MixinIntegratedServer",
-    "early.client.MixinMain",
-    "early.client.MixinMinecraft",
-    "early.client.MixinServerConfigurationManager",
-    "early.client.MixinSpecialPackets"
+    "client.MixinClientPackets",
+    "client.MixinCrashReport",
+    "client.MixinEntityClientPlayerMP",
+    "client.MixinEntityRenderer",
+    "client.MixinFramebuffer",
+    "client.MixinGuiIngame",
+    "client.MixinIntegratedServer",
+    "client.MixinMain",
+    "client.MixinMinecraft",
+    "client.MixinServerConfigurationManager",
+    "client.MixinPacketEventsClient"
   ]
 }
