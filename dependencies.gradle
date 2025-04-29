@@ -35,6 +35,6 @@
  */
 dependencies {
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.7.4-GTNH:dev")
-    implementation(files("libs/liteloader-stub-1.0.1.jar"))
-//    implementation(files("libs/liteloader-deobfuscated.jar"))
+    implementation(files("libs/liteloader-stub-1.0.2.jar"))
+//    implementation(rfg.deobf(files("libs/liteloader-deobfuscated.jar")))
 }
