@@ -25,6 +25,15 @@ import com.midnight.liteloaderloader.lib.Tuple;
 @SuppressWarnings("unused")
 public class LiteloaderTransformer implements IClassTransformer {
 
+    // spotless:off
+    private static final String[] transformedNamespaces = new String[] {
+        // Liteloader base classes
+        "com.mumfrey.liteloader",
+        // Classes for Macro Keybind Mod, required for compatibility.
+        "net.eq2online"
+    };
+    // spotless:on
+
     // This is a hashmap of classes with methods that need to return immediately.
     // The key is the class name, and the value is a tuple of the method name and a tuple of the instruction to replace
     // The nested tuple contains the type of return instruction (either ARETURN or RETURN) and the index of the
@@ -43,16 +52,18 @@ public class LiteloaderTransformer implements IClassTransformer {
 
         if (basicClass == null) return null;
 
-        if (!transformedName.startsWith("com.mumfrey.liteloader")) {
-            return basicClass;
+        for (String namespace : transformedNamespaces) {
+            if (transformedName.startsWith(namespace)) {
+                byte[] transformedClass = applyTransformation(basicClass, transformedName);
+                if (!Arrays.equals(transformedClass, basicClass)) {
+                    LOG.info("Transformed {}", transformedName);
+                }
+
+                return transformedClass;
+            }
         }
 
-        byte[] transformedClass = applyTransformation(basicClass, transformedName);
-        if (!Arrays.equals(transformedClass, basicClass)) {
-            LOG.info("Transformed {}", transformedName);
-        }
-
-        return transformedClass;
+        return basicClass;
     }
 
     private byte[] applyTransformation(byte[] basicClass, String transformedName) {
