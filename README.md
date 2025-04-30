@@ -12,9 +12,14 @@ Additionally, Liteloader uses the old obfuscated mappings, which stops it from b
 
 **Note:** This is **not** a full replacement for Liteloader, it is designed to run alongside it. You still need Liteloader itself.
 
+## Installation
+
+See [INSTALLATION.md](./INSTALLATION.md)
+
 ## Requirements
 
 - Liteloader being run as a mod, not installed separately alongside Forge (eg. through the Versions tab in MultiMC or its derivatives)
+  - See the [installation instructions](./INSTALLATION.md)
 - unimixins
 
 ### Not Implemented
