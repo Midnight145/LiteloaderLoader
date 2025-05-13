@@ -1,9 +1,12 @@
 package com.midnight.liteloaderloader.core;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import net.minecraftforge.common.config.Configuration;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +22,8 @@ public class LiteloaderLoader extends DummyModContainer implements IFMLLoadingPl
 
     public static Logger LOG = LogManager.getLogger("LiteloaderLoader");
 
+    public static boolean handlePacketSubclasses = false;
+
     private static ModMetadata metadata = new ModMetadata();
     static {
         metadata.name = "LiteloaderLoader";
@@ -29,7 +34,17 @@ public class LiteloaderLoader extends DummyModContainer implements IFMLLoadingPl
 
     public LiteloaderLoader() {
         super(metadata);
-        // LoadingBar.setEnabled(false);
+        Configuration config = new Configuration(
+            Paths.get("config", "liteloaderloader.cfg")
+                .toFile());
+        handlePacketSubclasses = config.getBoolean(
+            "handlePacketSubclasses",
+            "liteloaderloader",
+            true,
+            "Enable handling of packet subclasses. This might cause issues with mods, but it's unlikely.");
+        if (config.hasChanged()) {
+            config.save();
+        }
     }
 
     @Override
