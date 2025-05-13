@@ -138,8 +138,10 @@ public class MixinClientPackets {
 
     @Inject(method = "processPacket(Lnet/minecraft/network/INetHandler;)V", at = @At("HEAD"))
     private void throwPacketEvent(INetHandler handler, CallbackInfo ci) {
-        // LiteLoader doesn't handle subclasses of packets, so we need to retrace the class hierarchy to get the "base class".
-        // If we don't do this, we'll get an IndexOutOfBounds later due to an indexOf returning -1 for any mods that extend a specific packet type.
+        // LiteLoader doesn't handle subclasses of packets, so we need to retrace the class hierarchy to get the "base
+        // class".
+        // If we don't do this, we'll get an IndexOutOfBounds later due to an indexOf returning -1 for any mods that
+        // extend a specific packet type.
         Class<?> baseClass = this.getClass();
         while (baseClass.getSuperclass() != Packet.class) {
             if (!LiteloaderLoader.handlePacketSubclasses) {
