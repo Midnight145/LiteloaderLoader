@@ -1,6 +1,7 @@
 package com.midnight.liteloaderloader.mixin.early.client;
 
 import net.minecraft.network.INetHandler;
+import net.minecraft.network.Packet;
 import net.minecraft.network.handshake.client.C00Handshake;
 import net.minecraft.network.login.client.C00PacketLoginStart;
 import net.minecraft.network.login.client.C01PacketEncryptionResponse;
@@ -98,6 +99,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.midnight.liteloaderloader.core.LiteloaderLoader;
 import com.midnight.liteloaderloader.lib.StringUtil;
 import com.mumfrey.liteloader.common.transformers.PacketEventInfo;
 import com.mumfrey.liteloader.core.PacketEvents;
@@ -136,7 +138,16 @@ public class MixinClientPackets {
 
     @Inject(method = "processPacket(Lnet/minecraft/network/INetHandler;)V", at = @At("HEAD"))
     private void throwPacketEvent(INetHandler handler, CallbackInfo ci) {
-        String className = StringUtil.getShortClassName(this.getClass());
+        // LiteLoader doesn't handle subclasses of packets, so we need to retrace the class hierarchy to get the "base class".
+        // If we don't do this, we'll get an IndexOutOfBounds later due to an indexOf returning -1 for any mods that extend a specific packet type.
+        Class<?> baseClass = this.getClass();
+        while (baseClass.getSuperclass() != Packet.class) {
+            if (!LiteloaderLoader.handlePacketSubclasses) {
+                return;
+            }
+            baseClass = baseClass.getSuperclass();
+        }
+        String className = StringUtil.getShortClassName(baseClass);
         PacketEventInfo eventInfo = new PacketEventInfo("on" + className, this, true, Packets.indexOf(className));
         PacketEvents.handlePacket(eventInfo, handler);
     }
