@@ -1,6 +1,5 @@
 package com.midnight.liteloaderloader.core.transformers.compat;
 
-import static com.midnight.liteloaderloader.core.LiteloaderLoader.LOG;
 import static org.spongepowered.asm.lib.Opcodes.ALOAD;
 import static org.spongepowered.asm.lib.Opcodes.FLOAD;
 import static org.spongepowered.asm.lib.Opcodes.INVOKESTATIC;
