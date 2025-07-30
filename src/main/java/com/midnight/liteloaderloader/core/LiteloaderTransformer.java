@@ -4,7 +4,11 @@ import static com.midnight.liteloaderloader.core.LiteloaderLoader.LOG;
 import static org.spongepowered.asm.lib.Opcodes.ALOAD;
 import static org.spongepowered.asm.lib.Opcodes.ARETURN;
 import static org.spongepowered.asm.lib.Opcodes.ASM9;
+import static org.spongepowered.asm.lib.Opcodes.F_SAME;
+import static org.spongepowered.asm.lib.Opcodes.GETFIELD;
+import static org.spongepowered.asm.lib.Opcodes.IFEQ;
 import static org.spongepowered.asm.lib.Opcodes.INVOKESPECIAL;
+import static org.spongepowered.asm.lib.Opcodes.INVOKEVIRTUAL;
 import static org.spongepowered.asm.lib.Opcodes.POP;
 import static org.spongepowered.asm.lib.Opcodes.RETURN;
 
@@ -38,6 +42,7 @@ public class LiteloaderTransformer implements IClassTransformer {
         // Classes for Macro Keybind Mod, required for compatibility.
         "net.eq2online"
     };
+
     // spotless:on
 
     // This is a hashmap of classes with methods that need to return immediately.
@@ -70,6 +75,7 @@ public class LiteloaderTransformer implements IClassTransformer {
             bytes -> new ClassOverlayTransformerTransformer().apply(bytes));
 
         // com.mumfrey.liteloader
+
         toKill.put("CrashReportTransformer", Tuple.of("transform", Tuple.of(ARETURN, 3)));
         toKill.put("MinecraftOverlayTransformer", Tuple.of("postOverlayTransform", Tuple.of(RETURN, null)));
         toKill.put("LiteLoaderBootstrap", Tuple.of("preBeginGame", Tuple.of(RETURN, null)));
@@ -253,6 +259,29 @@ public class LiteloaderTransformer implements IClassTransformer {
             // If the method is in toKill, we want to return immediately. These functions are either reimplemented in
             // a mixin or are not needed.
             String truncatedName = getClassName(this.className);
+
+            // Special handling for ClassOverlayTransformer methods
+            // For some reason, MinecraftOverlay gets passed into the overlay transformer despite being an overlay,
+            // which crashes the game. We need to check for this and return early if it is, while still handling all
+            // other overlays.
+            if (truncatedName.equals("ClassOverlayTransformer")) {
+                if (this.name.equals("transform")) {
+                    // Class name is passed as first argument
+                    visitVarInsn(ALOAD, 1);
+                    // we want to return index 3
+                    this.transformClassOverlayMethod(3);
+                } else if (this.name.equals("applyOverlay")) {
+                    // Class name is the field overlayClassName, so we have to load it here
+                    visitVarInsn(ALOAD, 0);
+                    visitFieldInsn(
+                        GETFIELD,
+                        this.className.replace(".", "/"),
+                        "overlayClassName",
+                        "Ljava/lang/String;");
+                    // we want to return index 2
+                    this.transformClassOverlayMethod(2);
+                }
+            }
             if (toKill.containsKey(truncatedName)) {
                 // The String is the method name
                 Tuple<String, Tuple<Integer, Integer>> tuple = toKill.get(truncatedName);
@@ -269,6 +298,21 @@ public class LiteloaderTransformer implements IClassTransformer {
                 }
             }
             super.visitCode();
+        }
+
+        private void transformClassOverlayMethod(int index) {
+            visitLdcInsn("com.mumfrey.liteloader.client.overlays.MinecraftOverlay");
+            visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "equals", "(Ljava/lang/Object;)Z", false);
+
+            Label notEqual = new Label();
+            visitJumpInsn(IFEQ, notEqual);
+
+            // If equal, load argument at index 3 and return
+            visitVarInsn(ALOAD, index);
+            visitInsn(ARETURN);
+
+            visitLabel(notEqual);
+            visitFrame(F_SAME, 0, null, 0, null);
         }
 
         @Override
