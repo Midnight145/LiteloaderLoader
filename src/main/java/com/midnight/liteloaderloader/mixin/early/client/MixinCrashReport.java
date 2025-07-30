@@ -14,6 +14,6 @@ public class MixinCrashReport {
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void injectPopulateCrashReport(CallbackInfo ci) {
-        LiteLoader.populateCrashReport((CrashReport) (Object) this);
+        LiteLoader.populateCrashReport(this);
     }
 }

@@ -31,6 +31,7 @@ public class AngelicaHUDCachingTransformer extends ClassTransformer {
 
         list = callFunction("throwPostEvents");
         AbstractInsnNode last;
+        //noinspection StatementWithEmptyBody
         for (last = methodNode.instructions.getLast(); last.getOpcode() != Opcodes.RETURN; last = last.getPrevious());
         methodNode.instructions.insertBefore(last, list);
     }
@@ -55,12 +56,12 @@ public class AngelicaHUDCachingTransformer extends ClassTransformer {
 
     @SuppressWarnings("unused") // called by the injected code
     public static void throwPreEvents(EntityRenderer renderer, float partialTicks) {
-        CallbackProxyClient.preRenderGUI(new EventInfo("prerendergui", renderer, false), partialTicks);
-        CallbackProxyClient.postRenderHUD(new EventInfo("prerenderhud", renderer, false), partialTicks);
+        CallbackProxyClient.preRenderGUI(new EventInfo<>("prerendergui", renderer, false), partialTicks);
+        CallbackProxyClient.postRenderHUD(new EventInfo<>("prerenderhud", renderer, false), partialTicks);
     }
 
     @SuppressWarnings("unused") // called by the injected code
     public static void throwPostEvents(EntityRenderer renderer, float partialTicks) {
-        CallbackProxyClient.postRenderHUD(new EventInfo("postrenderhud", renderer, false), partialTicks);
+        CallbackProxyClient.postRenderHUD(new EventInfo<>("postrenderhud", renderer, false), partialTicks);
     }
 }

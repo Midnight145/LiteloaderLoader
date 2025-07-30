@@ -76,6 +76,7 @@ public abstract class MixinMinecraft implements IMinecraft {
         return this.serverPort;
     }
 
+    @SuppressWarnings("deprecation")
     @Inject(
         method = "startGame",
         at = @At(

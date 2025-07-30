@@ -46,7 +46,7 @@ public class LiteloaderTransformer implements IClassTransformer {
     // spotless:on
 
     // This is a hashmap of classes with methods that need to return immediately.
-    // The key is the class name, and the value is a tuple of the method name and a tuple of the instruction to replace
+    // The key is the class name, and the value is a tuple of the method name and a tuple of the instruction to replace.
     // The nested tuple contains the type of return instruction (either ARETURN or RETURN) and the index of the
     // parameter to return or null if not applicable.
     private static final HashMap<String, Tuple<String, Tuple<Integer, Integer>>> toKill = new HashMap<>();
