@@ -34,7 +34,9 @@
  * For more details, see https://docs.gradle.org/8.0.1/userguide/java_library_plugin.html#sec:java_library_configurations_graph
  */
 dependencies {
-    runtimeOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.7.4-GTNH:dev")
-    implementation(files("libs/liteloader-stub-1.0.2.jar"))
-//    implementation(rfg.deobf(files("libs/liteloader-deobfuscated.jar")))
+    runtimeOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.7.69-GTNH:dev")
+//    implementation(files("libs/liteloader-stub-1.0.2.jar"))
+    implementation(files("libs/liteloader-deobfuscated.jar"))
+    implementation(files("libs/minemlp.jar"))
+    compile("com.github.GTNewHorizons:Angelica:1.0.0-beta53")
 }
