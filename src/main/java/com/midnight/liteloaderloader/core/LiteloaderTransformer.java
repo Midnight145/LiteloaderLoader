@@ -14,9 +14,12 @@ import static org.spongepowered.asm.lib.Opcodes.RETURN;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.function.Function;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.spongepowered.asm.lib.ClassReader;
 import org.spongepowered.asm.lib.ClassVisitor;
 import org.spongepowered.asm.lib.ClassWriter;
@@ -24,6 +27,9 @@ import org.spongepowered.asm.lib.FieldVisitor;
 import org.spongepowered.asm.lib.Label;
 import org.spongepowered.asm.lib.MethodVisitor;
 
+import com.midnight.liteloaderloader.core.transformers.ClassOverlayTransformerTransformer;
+import com.midnight.liteloaderloader.core.transformers.EventTransformer;
+import com.midnight.liteloaderloader.core.transformers.compat.AngelicaHUDCachingTransformer;
 import com.midnight.liteloaderloader.lib.Tuple;
 
 @SuppressWarnings("unused")
@@ -45,16 +51,55 @@ public class LiteloaderTransformer implements IClassTransformer {
     // parameter to return or null if not applicable.
     private static final HashMap<String, Tuple<String, Tuple<Integer, Integer>>> toKill = new HashMap<>();
 
+    // One-off transformations that we want to apply to specific classes.
+    // Function should be the apply method of a ClassTransformer subclass
+    private static final HashMap<String, Function<byte[], byte[]>> transformations = new HashMap<>();
+
     static {
+        // Angelica's HUD Caching option overrides EntityRenderer.updateCameraAndRender, which is used for several
+        // events. We need to apply this transformer to it to call throw events ourselves.
+        transformations.put(
+            "com.gtnewhorizons.angelica.hudcaching.HUDCaching",
+            bytes -> new AngelicaHUDCachingTransformer().apply(bytes));
+
+        // The Liteloader event transformer is broken due to frames not being computed properly, even without stripping
+        // the COMPUTE_FRAMES flag from its ClassWriter, which we do later.
+        // This transformer manually injects a frame into the instruction list.
+        transformations
+            .put("com.mumfrey.liteloader.transformers.event.Event", bytes -> new EventTransformer().apply(bytes));
+
+        // For some reason, MinecraftOverlay is passed into the ClassOverlayTransformer, which causes a crash.
+        // We add a check that immediately returns if the current class is MinecraftOverlay.
+        transformations.put(
+            "com.mumfrey.liteloader.transformers.ClassOverlayTransformer",
+            bytes -> new ClassOverlayTransformerTransformer().apply(bytes));
+
+        // com.mumfrey.liteloader
+
         toKill.put("CrashReportTransformer", Tuple.of("transform", Tuple.of(ARETURN, 3)));
         toKill.put("MinecraftOverlayTransformer", Tuple.of("postOverlayTransform", Tuple.of(RETURN, null)));
         toKill.put("LiteLoaderBootstrap", Tuple.of("preBeginGame", Tuple.of(RETURN, null)));
+
+        // net.eq2online
+        try {
+            // These fields are missing in newer lwjgl versions
+            // MacroKeybinds seems to work fine either way, so we return immediately to get rid of the exception spam.
+            Mouse.class.getDeclaredField("readBuffer");
+            Keyboard.class.getDeclaredField("readBuffer");
+        } catch (NoSuchFieldException e) {
+            toKill.put("InputHandler", Tuple.of("getBuffers", Tuple.of(RETURN, null)));
+        }
     }
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
 
         if (basicClass == null) return null;
+        if (transformations.containsKey(transformedName)) {
+            LOG.info("Applying transformation for {}", transformedName);
+            basicClass = transformations.get(transformedName)
+                .apply(basicClass);
+        }
 
         for (String namespace : transformedNamespaces) {
             if (transformedName.startsWith(namespace)) {
@@ -73,13 +118,6 @@ public class LiteloaderTransformer implements IClassTransformer {
     private byte[] applyTransformation(byte[] basicClass, String transformedName) {
         ClassReader classReader = new ClassReader(basicClass);
         ClassWriter classWriter = new ClassWriter(0);
-
-        if (getClassName(transformedName).equals("Event")) {
-            ClassVisitor second = new EventTransformer(classWriter);
-            ClassVisitor first = new LiteloaderClassVisitor(ASM9, second, transformedName);
-            classReader.accept(first, 0);
-            return classWriter.toByteArray();
-        }
 
         ClassVisitor classVisitor = new LiteloaderClassVisitor(ASM9, classWriter, transformedName);
         classReader.accept(classVisitor, 0);
@@ -217,7 +255,9 @@ public class LiteloaderTransformer implements IClassTransformer {
 
         @Override
         public void visitCode() {
-            // This will return early if the method is in toKill
+
+            // If the method is in toKill, we want to return immediately. These functions are either reimplemented in
+            // a mixin or are not needed.
             String truncatedName = getClassName(this.className);
 
             // Special handling for ClassOverlayTransformer methods

@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResourcePack;
-import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.util.Timer;
 
 import org.lwjgl.LWJGLException;
@@ -16,12 +15,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mumfrey.liteloader.client.CallbackProxyClient;
 import com.mumfrey.liteloader.client.overlays.IMinecraft;
 import com.mumfrey.liteloader.launch.LiteLoaderTweaker;
-import com.mumfrey.liteloader.transformers.event.EventInfo;
 
 import cpw.mods.fml.common.ProgressManager;
 
@@ -92,45 +87,5 @@ public abstract class MixinMinecraft implements IMinecraft {
         LiteLoaderTweaker.postInit();
         progressBar.step("LiteLoader Mod Initialization Complete");
         ProgressManager.pop(progressBar);
-    }
-
-    @Inject(method = "startGame", at = @At(value = "TAIL"))
-    public void fl$startGame(CallbackInfo ci) {
-        CallbackProxyClient.onStartupComplete(new EventInfo("onstartupcomplete", this, false));
-    }
-
-    @Inject(
-        method = "runGameLoop",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V"))
-    public void fl$runGameLoop(CallbackInfo ci) {
-        CallbackProxyClient.onTimerUpdate(new EventInfo("ontimerupdate", this, false));
-    }
-
-    @Inject(
-        method = "runGameLoop",
-        at = @At(value = "INVOKE", target = "Lcpw/mods/fml/common/FMLCommonHandler;onRenderTickStart(F)V"),
-        remap = false)
-    public void fl$onRenderTickStart(CallbackInfo ci) {
-        CallbackProxyClient.onRender(new EventInfo("onrender", this, false));
-        CallbackProxyClient.onTick(new EventInfo("ontick", this, false));
-    }
-
-    @WrapOperation(
-        method = "runGameLoop",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/shader/Framebuffer;framebufferRender(II)V"))
-    public void fl$framebufferRender(Framebuffer instance, int f1, int f2, Operation<Void> original) {
-        CallbackProxyClient.preRenderFBO(new EventInfo("prerenderfbo", this, false));
-        original.call(instance, f1, f2);
-        CallbackProxyClient.postRenderFBO(new EventInfo("postrenderfbo", this, false));
-    }
-
-    @Inject(method = "updateFramebufferSize", at = @At(value = "HEAD"))
-    public void fl$updateFramebufferSize(CallbackInfo ci) {
-        CallbackProxyClient.onResize(new EventInfo("updateframebuffersize", this, false));
-    }
-
-    @Inject(method = "runTick", at = @At(value = "HEAD"))
-    public void fl$runTick(CallbackInfo ci) {
-        CallbackProxyClient.newTick(new EventInfo("newtick", this, false));
     }
 }

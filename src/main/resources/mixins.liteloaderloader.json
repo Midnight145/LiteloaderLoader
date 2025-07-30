@@ -6,16 +6,8 @@
   "compatibilityLevel": "JAVA_8",
   "package": "com.midnight.liteloaderloader.mixin.early",
   "client": [
-    "client.MixinClientPackets",
     "client.MixinCrashReport",
-    "client.MixinEntityClientPlayerMP",
-    "client.MixinEntityRenderer",
-    "client.MixinFramebuffer",
-    "client.MixinGuiIngame",
-    "client.MixinIntegratedServer",
     "client.MixinMain",
-    "client.MixinMinecraft",
-    "client.MixinServerConfigurationManager",
-    "client.MixinPacketEventsClient"
+    "client.MixinMinecraft"
   ]
 }
