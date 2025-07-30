@@ -31,7 +31,7 @@ public class AngelicaHUDCachingTransformer extends ClassTransformer {
 
         list = callFunction("throwPostEvents");
         AbstractInsnNode last;
-        //noinspection StatementWithEmptyBody
+        // noinspection StatementWithEmptyBody
         for (last = methodNode.instructions.getLast(); last.getOpcode() != Opcodes.RETURN; last = last.getPrevious());
         methodNode.instructions.insertBefore(last, list);
     }

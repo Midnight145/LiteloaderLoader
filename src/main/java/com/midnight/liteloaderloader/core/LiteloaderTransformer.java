@@ -30,6 +30,7 @@ import org.spongepowered.asm.lib.MethodVisitor;
 import com.midnight.liteloaderloader.core.transformers.ClassOverlayTransformerTransformer;
 import com.midnight.liteloaderloader.core.transformers.EventTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.AngelicaHUDCachingTransformer;
+import com.midnight.liteloaderloader.core.transformers.compat.VoxelCommonLiteModTransformer;
 import com.midnight.liteloaderloader.lib.Tuple;
 
 @SuppressWarnings("unused")
@@ -74,6 +75,12 @@ public class LiteloaderTransformer implements IClassTransformer {
             "com.mumfrey.liteloader.transformers.ClassOverlayTransformer",
             bytes -> new ClassOverlayTransformerTransformer().apply(bytes));
 
+        // VoxelCommonLiteMod uses a hardcoded TEMP environment variable, which only exists on Windows.
+        // We replace it with java.io.tmpdir property, which is the standard temporary directory for Java.
+        transformations.put(
+            "com.thevoxelbox.common.VoxelCommonLiteMod",
+            bytes -> new VoxelCommonLiteModTransformer().apply(bytes));
+
         // com.mumfrey.liteloader
 
         toKill.put("CrashReportTransformer", Tuple.of("transform", Tuple.of(ARETURN, 3)));
@@ -93,7 +100,6 @@ public class LiteloaderTransformer implements IClassTransformer {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
-
         if (basicClass == null) return null;
         if (transformations.containsKey(transformedName)) {
             LOG.info("Applying transformation for {}", transformedName);
