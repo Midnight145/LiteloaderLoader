@@ -1,16 +1,9 @@
 package com.midnight.liteloaderloader.core;
 
 import static com.midnight.liteloaderloader.core.LiteloaderLoader.LOG;
-import static org.spongepowered.asm.lib.Opcodes.ALOAD;
-import static org.spongepowered.asm.lib.Opcodes.ARETURN;
 import static org.spongepowered.asm.lib.Opcodes.ASM9;
-import static org.spongepowered.asm.lib.Opcodes.F_SAME;
-import static org.spongepowered.asm.lib.Opcodes.GETFIELD;
-import static org.spongepowered.asm.lib.Opcodes.IFEQ;
 import static org.spongepowered.asm.lib.Opcodes.INVOKESPECIAL;
-import static org.spongepowered.asm.lib.Opcodes.INVOKEVIRTUAL;
 import static org.spongepowered.asm.lib.Opcodes.POP;
-import static org.spongepowered.asm.lib.Opcodes.RETURN;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,8 +11,6 @@ import java.util.function.Function;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.spongepowered.asm.lib.ClassReader;
 import org.spongepowered.asm.lib.ClassVisitor;
 import org.spongepowered.asm.lib.ClassWriter;
@@ -29,7 +20,10 @@ import org.spongepowered.asm.lib.MethodVisitor;
 
 import com.midnight.liteloaderloader.core.transformers.ClassOverlayTransformerTransformer;
 import com.midnight.liteloaderloader.core.transformers.EventTransformer;
+import com.midnight.liteloaderloader.core.transformers.MinecraftOverlayTransformerTransformer;
+import com.midnight.liteloaderloader.core.transformers.MinecraftTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.AngelicaHUDCachingTransformer;
+import com.midnight.liteloaderloader.core.transformers.compat.InputHandlerTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.VoxelCommonLiteModTransformer;
 import com.midnight.liteloaderloader.lib.Tuple;
 
@@ -41,7 +35,7 @@ public class LiteloaderTransformer implements IClassTransformer {
         // Liteloader base classes
         "com.mumfrey.liteloader",
         // Classes for Macro Keybind Mod, required for compatibility.
-        "net.eq2online"
+        "net.eq2online.macros"
     };
 
     // spotless:on
@@ -81,21 +75,22 @@ public class LiteloaderTransformer implements IClassTransformer {
             "com.thevoxelbox.common.VoxelCommonLiteMod",
             bytes -> new VoxelCommonLiteModTransformer().apply(bytes));
 
-        // com.mumfrey.liteloader
+        // The MinecraftOverlayTransformer has a lot of issues running under new toolings. It fails to remap `this`
+        // from MinecraftOverlay to Minecraft, which causes a crash. Additionally, it doesn't properly handle frames
+        // when it does the startGame transform to initialize LiteLoader.
+        // We remap `this` to Minecraft, and kill the startGame transform and do it ourselves in MinecraftTransformer.
+        transformations.put(
+            "com.mumfrey.liteloader.client.transformers.MinecraftOverlayTransformer",
+            bytes -> new MinecraftOverlayTransformerTransformer().apply(bytes));
 
-        toKill.put("CrashReportTransformer", Tuple.of("transform", Tuple.of(ARETURN, 3)));
-        toKill.put("MinecraftOverlayTransformer", Tuple.of("postOverlayTransform", Tuple.of(RETURN, null)));
-        toKill.put("LiteLoaderBootstrap", Tuple.of("preBeginGame", Tuple.of(RETURN, null)));
+        // LiteLoader's MinecraftOverlayTransformer is broken and doesn't properly calculate stack frames, so we inject
+        // Liteloader initialization functions instead of letting Liteloader do it.
+        transformations.put("net.minecraft.client.Minecraft", bytes -> new MinecraftTransformer().apply(bytes));
 
-        // net.eq2online
-        try {
-            // These fields are missing in newer lwjgl versions
-            // MacroKeybinds seems to work fine either way, so we return immediately to get rid of the exception spam.
-            Mouse.class.getDeclaredField("readBuffer");
-            Keyboard.class.getDeclaredField("readBuffer");
-        } catch (NoSuchFieldException e) {
-            toKill.put("InputHandler", Tuple.of("getBuffers", Tuple.of(RETURN, null)));
-        }
+        // InputHandler tries to resolve lwjgl2-only fields, which spams exceptions in the log. It mostly works either
+        // way, so we just return immediately in the getBuffers method to avoid the spam.
+        transformations
+            .put("net.eq2online.macros.input.InputHandler", bytes -> new InputHandlerTransformer().apply(bytes));
     }
 
     @Override
@@ -123,7 +118,7 @@ public class LiteloaderTransformer implements IClassTransformer {
 
     private byte[] applyTransformation(byte[] basicClass, String transformedName) {
         ClassReader classReader = new ClassReader(basicClass);
-        ClassWriter classWriter = new ClassWriter(0);
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 
         ClassVisitor classVisitor = new LiteloaderClassVisitor(ASM9, classWriter, transformedName);
         classReader.accept(classVisitor, 0);
@@ -188,13 +183,8 @@ public class LiteloaderTransformer implements IClassTransformer {
     // We do also make a modification to ClassWriter<init> calls to strip COMPUTE_FRAMES from the constant passed.
     static class LiteloaderMethodVisitor extends MethodVisitor {
 
-        private final String className;
-        private final String name;
-
         public LiteloaderMethodVisitor(int api, MethodVisitor methodVisitor, String className, String name) {
             super(api, methodVisitor);
-            this.className = className;
-            this.name = name;
         }
 
         @Override
@@ -260,68 +250,6 @@ public class LiteloaderTransformer implements IClassTransformer {
         }
 
         @Override
-        public void visitCode() {
-
-            // If the method is in toKill, we want to return immediately. These functions are either reimplemented in
-            // a mixin or are not needed.
-            String truncatedName = getClassName(this.className);
-
-            // Special handling for ClassOverlayTransformer methods
-            // For some reason, MinecraftOverlay gets passed into the overlay transformer despite being an overlay,
-            // which crashes the game. We need to check for this and return early if it is, while still handling all
-            // other overlays.
-            if (truncatedName.equals("ClassOverlayTransformer")) {
-                if (this.name.equals("transform")) {
-                    // Class name is passed as first argument
-                    visitVarInsn(ALOAD, 1);
-                    // we want to return index 3
-                    this.transformClassOverlayMethod(3);
-                } else if (this.name.equals("applyOverlay")) {
-                    // Class name is the field overlayClassName, so we have to load it here
-                    visitVarInsn(ALOAD, 0);
-                    visitFieldInsn(
-                        GETFIELD,
-                        this.className.replace(".", "/"),
-                        "overlayClassName",
-                        "Ljava/lang/String;");
-                    // we want to return index 2
-                    this.transformClassOverlayMethod(2);
-                }
-            }
-            if (toKill.containsKey(truncatedName)) {
-                // The String is the method name
-                Tuple<String, Tuple<Integer, Integer>> tuple = toKill.get(truncatedName);
-                // It's more accurately Tuple<OPCODE, Integer>, where OPCODE is a return opcode.
-                Tuple<Integer, Integer> instructionInfo = tuple.getSecond();
-                if (this.name.equals(tuple.getFirst())) {
-                    if (instructionInfo.getFirst() == ARETURN) {
-                        visitVarInsn(ALOAD, instructionInfo.getSecond());
-                        visitInsn(ARETURN);
-                    } else if (instructionInfo.getFirst() == RETURN) {
-                        visitInsn(RETURN);
-                    }
-                    return;
-                }
-            }
-            super.visitCode();
-        }
-
-        private void transformClassOverlayMethod(int index) {
-            visitLdcInsn("com.mumfrey.liteloader.client.overlays.MinecraftOverlay");
-            visitMethodInsn(INVOKEVIRTUAL, "java/lang/String", "equals", "(Ljava/lang/Object;)Z", false);
-
-            Label notEqual = new Label();
-            visitJumpInsn(IFEQ, notEqual);
-
-            // If equal, load argument at index 3 and return
-            visitVarInsn(ALOAD, index);
-            visitInsn(ARETURN);
-
-            visitLabel(notEqual);
-            visitFrame(F_SAME, 0, null, 0, null);
-        }
-
-        @Override
         public void visitLocalVariable(String name, String desc, String signature, Label start, Label end, int index) {
             super.visitLocalVariable(
                 LiteloaderTransformer.remapString(name),
@@ -332,12 +260,5 @@ public class LiteloaderTransformer implements IClassTransformer {
                 index);
         }
 
-    }
-
-    private static String getClassName(String name) {
-        // This will just get the class name from a qualified name, eg.
-        // com.example.TestClass -> TestClass
-        int lastDotIndex = name.lastIndexOf('.');
-        return lastDotIndex == -1 ? name : name.substring(lastDotIndex + 1);
     }
 }
