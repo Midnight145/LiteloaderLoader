@@ -1,9 +1,9 @@
 package com.midnight.liteloaderloader.core.transformers.compat;
 
-import static org.spongepowered.asm.lib.Opcodes.RETURN;
+import static org.objectweb.asm.Opcodes.RETURN;
 
-import org.spongepowered.asm.lib.tree.InsnNode;
-import org.spongepowered.asm.lib.tree.MethodNode;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.MethodNode;
 
 import com.midnight.liteloaderloader.core.transformers.ClassTransformer;
 

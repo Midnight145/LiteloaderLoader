@@ -1,17 +1,17 @@
 package com.midnight.liteloaderloader.core.transformers.compat;
 
-import static org.spongepowered.asm.lib.Opcodes.ALOAD;
-import static org.spongepowered.asm.lib.Opcodes.FLOAD;
-import static org.spongepowered.asm.lib.Opcodes.INVOKESTATIC;
+import static org.objectweb.asm.Opcodes.ALOAD;
+import static org.objectweb.asm.Opcodes.FLOAD;
+import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 
 import net.minecraft.client.renderer.EntityRenderer;
 
-import org.spongepowered.asm.lib.Opcodes;
-import org.spongepowered.asm.lib.tree.AbstractInsnNode;
-import org.spongepowered.asm.lib.tree.InsnList;
-import org.spongepowered.asm.lib.tree.MethodInsnNode;
-import org.spongepowered.asm.lib.tree.MethodNode;
-import org.spongepowered.asm.lib.tree.VarInsnNode;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import com.midnight.liteloaderloader.core.transformers.ClassTransformer;
 import com.mumfrey.liteloader.client.CallbackProxyClient;
