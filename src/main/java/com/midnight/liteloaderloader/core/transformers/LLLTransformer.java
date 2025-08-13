@@ -1,4 +1,4 @@
-package com.midnight.liteloaderloader.core;
+package com.midnight.liteloaderloader.core.transformers;
 
 import static com.midnight.liteloaderloader.core.LiteloaderLoader.LOG;
 
@@ -7,13 +7,12 @@ import java.util.function.Function;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 
-import com.midnight.liteloaderloader.core.transformers.ClassTransformerTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.AngelicaHUDCachingTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.InputHandlerTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.VoxelCommonLiteModTransformer;
 
 @SuppressWarnings("unused")
-public class LiteloaderTransformer implements IClassTransformer {
+public class LLLTransformer implements IClassTransformer {
 
     // One-off transformations that we want to apply to specific classes.
     // Function should be the apply method of a ClassTransformer subclass

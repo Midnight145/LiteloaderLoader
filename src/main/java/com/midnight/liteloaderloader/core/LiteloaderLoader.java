@@ -14,7 +14,7 @@ public class LiteloaderLoader implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] { "com.midnight.liteloaderloader.core.LiteloaderTransformer" };
+        return new String[] { "com.midnight.liteloaderloader.core.transformers.LLLTransformer" };
     }
 
     @Override
