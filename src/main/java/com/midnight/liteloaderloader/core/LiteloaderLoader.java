@@ -19,12 +19,12 @@ public class LiteloaderLoader implements IFMLLoadingPlugin {
 
     @Override
     public String getModContainerClass() {
-        return "";
+        return null;
     }
 
     @Override
     public String getSetupClass() {
-        return "";
+        return null;
     }
 
     @Override
@@ -34,6 +34,6 @@ public class LiteloaderLoader implements IFMLLoadingPlugin {
 
     @Override
     public String getAccessTransformerClass() {
-        return "";
+        return null;
     }
 }
