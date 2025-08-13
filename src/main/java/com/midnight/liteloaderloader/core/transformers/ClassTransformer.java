@@ -5,10 +5,12 @@ import static com.midnight.liteloaderloader.core.LiteloaderLoader.LOG;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
-import org.spongepowered.asm.lib.ClassReader;
-import org.spongepowered.asm.lib.ClassWriter;
-import org.spongepowered.asm.lib.tree.ClassNode;
-import org.spongepowered.asm.lib.tree.MethodNode;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
+
+import com.midnight.liteloaderloader.core.SafeClassWriter;
 
 public abstract class ClassTransformer {
 
@@ -34,8 +36,9 @@ public abstract class ClassTransformer {
                     method.instructions.size(),
                     insCount);
             }
+
         }
-        ClassWriter writer = new ClassWriter(0);
+        ClassWriter writer = new SafeClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         node.accept(writer);
         return writer.toByteArray();
     }

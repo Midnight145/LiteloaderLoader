@@ -4,10 +4,5 @@
   "refmap": "mixins.liteloaderloader.refmap.json",
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
-  "package": "com.midnight.liteloaderloader.mixin.early",
-  "client": [
-    "client.MixinCrashReport",
-    "client.MixinMain",
-    "client.MixinMinecraft"
-  ]
+  "package": "com.midnight.liteloaderloader.mixin"
 }

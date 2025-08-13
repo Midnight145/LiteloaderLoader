@@ -1,0 +1,56 @@
+package com.midnight.liteloaderloader.core.transformers;
+
+import static com.midnight.liteloaderloader.core.LiteloaderLoader.LOG;
+
+import java.util.HashMap;
+import java.util.function.Function;
+
+import net.minecraft.launchwrapper.IClassTransformer;
+
+import com.midnight.liteloaderloader.core.transformers.compat.AngelicaHUDCachingTransformer;
+import com.midnight.liteloaderloader.core.transformers.compat.InputHandlerTransformer;
+import com.midnight.liteloaderloader.core.transformers.compat.VoxelCommonLiteModTransformer;
+
+@SuppressWarnings("unused")
+public class LLLTransformer implements IClassTransformer {
+
+    // One-off transformations that we want to apply to specific classes.
+    // Function should be the apply method of a ClassTransformer subclass
+    private static final HashMap<String, Function<byte[], byte[]>> transformations = new HashMap<>();
+
+    static {
+        // Angelica's HUD Caching option overrides EntityRenderer.updateCameraAndRender, which is used for several
+        // events. We need to apply this transformer to it to call throw events ourselves.
+        transformations.put(
+            "com.gtnewhorizons.angelica.hudcaching.HUDCaching",
+            bytes -> new AngelicaHUDCachingTransformer().apply(bytes));
+
+        // VoxelCommonLiteMod uses a hardcoded TEMP environment variable, which only exists on Windows.
+        // We replace it with java.io.tmpdir property, which is the standard temporary directory for Java.
+        transformations.put(
+            "com.thevoxelbox.common.VoxelCommonLiteMod",
+            bytes -> new VoxelCommonLiteModTransformer().apply(bytes));
+
+        // InputHandler tries to resolve lwjgl2-only fields, which spams exceptions in the log. It mostly works either
+        // way, so we just return immediately in the getBuffers method to avoid the spam.
+        transformations
+            .put("net.eq2online.macros.input.InputHandler", bytes -> new InputHandlerTransformer().apply(bytes));
+
+        transformations.put(
+            "com.mumfrey.liteloader.transformers.ClassTransformer",
+            bytes -> new ClassTransformerTransformer().apply(bytes));
+    }
+
+    @Override
+    public byte[] transform(String name, String transformedName, byte[] basicClass) {
+
+        if (basicClass == null) return null;
+        if (transformations.containsKey(transformedName)) {
+            LOG.info("Applying transformation for {}", transformedName);
+
+            basicClass = transformations.get(transformedName)
+                .apply(basicClass);
+        }
+        return basicClass;
+    }
+}
