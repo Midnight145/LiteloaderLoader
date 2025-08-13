@@ -39,6 +39,10 @@ public class LLLTransformer implements IClassTransformer {
         transformations.put(
             "com.mumfrey.liteloader.transformers.ClassTransformer",
             bytes -> new ClassTransformerTransformer().apply(bytes));
+
+        transformations.put(
+            "com.mumfrey.liteloader.client.api.ObjectFactoryClient",
+            bytes -> new ObjectFactoryClientTransformer().apply(bytes));
     }
 
     @Override
