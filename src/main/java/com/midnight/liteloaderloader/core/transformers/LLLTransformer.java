@@ -36,10 +36,14 @@ public class LLLTransformer implements IClassTransformer {
         transformations
             .put("net.eq2online.macros.input.InputHandler", bytes -> new InputHandlerTransformer().apply(bytes));
 
+        // LiteLoader's ClassTransformer uses the default implementation of COMPUTE_FRAMES, which loads classes and is
+        // therefore. We replace it with our own version that doesn't load classes.
         transformations.put(
             "com.mumfrey.liteloader.transformers.ClassTransformer",
             bytes -> new ClassTransformerTransformer().apply(bytes));
 
+        // We kill liteloader's progress bar because it has issues with Forge, and isn't very useful anyway. We
+        // reimplement mod loading stages with ProgressManager.
         transformations.put(
             "com.mumfrey.liteloader.client.api.ObjectFactoryClient",
             bytes -> new ObjectFactoryClientTransformer().apply(bytes));
