@@ -1,6 +1,5 @@
 package com.midnight.liteloaderloader.core.transformers.loadingbar;
 
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -17,14 +16,14 @@ public class ObjectFactoryClientTransformer extends ClassTransformer {
 
     private void transformPreBeginGame(MethodNode method) {
         method.instructions.clear();
-        method.instructions.add(new TypeInsnNode(Opcodes.NEW, "com/midnight/liteloaderloader/core/lib/LLLLoadingBar"));
+        method.instructions.add(new TypeInsnNode(NEW, "com/midnight/liteloaderloader/core/lib/LLLLoadingBar"));
         method.instructions.add(
             new MethodInsnNode(
-                Opcodes.INVOKESPECIAL,
+                INVOKESPECIAL,
                 "com/midnight/liteloaderloader/core/lib/LLLLoadingBar",
                 "<init>",
                 "()V",
                 false));
-        method.instructions.add(new InsnNode(Opcodes.RETURN));
+        method.instructions.add(new InsnNode(RETURN));
     }
 }

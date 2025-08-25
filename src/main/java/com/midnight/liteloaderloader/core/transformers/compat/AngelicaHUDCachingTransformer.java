@@ -2,7 +2,6 @@ package com.midnight.liteloaderloader.core.transformers.compat;
 
 import net.minecraft.client.renderer.EntityRenderer;
 
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -28,7 +27,7 @@ public class AngelicaHUDCachingTransformer extends ClassTransformer {
         list = callFunction("throwPostEvents");
         AbstractInsnNode last;
         // noinspection StatementWithEmptyBody
-        for (last = methodNode.instructions.getLast(); last.getOpcode() != Opcodes.RETURN; last = last.getPrevious());
+        for (last = methodNode.instructions.getLast(); last.getOpcode() != RETURN; last = last.getPrevious());
         methodNode.instructions.insertBefore(last, list);
     }
 
@@ -36,13 +35,13 @@ public class AngelicaHUDCachingTransformer extends ClassTransformer {
         // AngelicaHUDCachingTransformer.methodName(EntityRenderer, float)
         InsnList list = new InsnList();
         // ALOAD 0 (EntityRenderer object)
-        list.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        list.add(new VarInsnNode(ALOAD, 0));
         // FLOAD 2 (partialTicks float)
-        list.add(new VarInsnNode(Opcodes.FLOAD, 2));
+        list.add(new VarInsnNode(FLOAD, 2));
         // actually call the method
         list.add(
             new MethodInsnNode(
-                Opcodes.INVOKESTATIC,
+                INVOKESTATIC,
                 "com/midnight/liteloaderloader/core/transformers/compat/AngelicaHUDCachingTransformer",
                 methodName,
                 "(Lnet/minecraft/client/renderer/EntityRenderer;F)V",

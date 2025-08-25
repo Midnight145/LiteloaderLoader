@@ -1,6 +1,5 @@
 package com.midnight.liteloaderloader.core.transformers.compat;
 
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
@@ -15,6 +14,6 @@ public class InputHandlerTransformer extends ClassTransformer {
 
     private void transformGetBuffers(MethodNode methodNode) {
         // just return immediately
-        methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), new InsnNode(Opcodes.RETURN));
+        methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), new InsnNode(RETURN));
     }
 }

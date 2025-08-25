@@ -19,7 +19,7 @@ public class ClassTransformerTransformer extends ClassTransformer {
         final String safeClassWriter = "com/midnight/liteloaderloader/core/SafeClassWriter";
 
         for (AbstractInsnNode insn : method.instructions.toArray()) {
-            if (insn.getOpcode() == Opcodes.NEW) {
+            if (insn.getOpcode() == NEW) {
                 TypeInsnNode t = (TypeInsnNode) insn;
                 if (objectWebClassWriter.equals(t.desc)) {
                     LOG.info("Transform: NEW ClassWriter -> SafeClassWriter in {}", method.name);
@@ -27,7 +27,7 @@ public class ClassTransformerTransformer extends ClassTransformer {
                 }
             }
 
-            else if (insn.getOpcode() == Opcodes.INVOKESPECIAL && insn instanceof MethodInsnNode m) {
+            else if (insn.getOpcode() == INVOKESPECIAL && insn instanceof MethodInsnNode m) {
                 if (objectWebClassWriter.equals(m.owner) && "<init>".equals(m.name)) {
                     LOG.info("Transform: <init> owner ClassWriter -> SafeClassWriter in {}", method.name);
                     m.owner = safeClassWriter;

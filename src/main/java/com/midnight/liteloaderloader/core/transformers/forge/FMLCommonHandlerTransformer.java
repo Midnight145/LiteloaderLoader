@@ -1,6 +1,5 @@
-package com.midnight.liteloaderloader.core.transformers;
+package com.midnight.liteloaderloader.core.transformers.forge;
 
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -9,6 +8,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import com.google.common.collect.ImmutableList;
 import com.midnight.liteloaderloader.core.lib.ReflectionHelper;
+import com.midnight.liteloaderloader.core.transformers.ClassTransformer;
 import com.mumfrey.liteloader.core.LiteLoaderMods;
 
 public class FMLCommonHandlerTransformer extends ClassTransformer {
@@ -22,7 +22,7 @@ public class FMLCommonHandlerTransformer extends ClassTransformer {
         // inject FMLCommonHandlerTransformer.addBranding(builder) after the last call to ImmutableList.Builder.add
 
         for (AbstractInsnNode insn : methodNode.instructions.toArray()) {
-            if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL) {
+            if (insn.getOpcode() == INVOKEVIRTUAL) {
                 MethodInsnNode min = (MethodInsnNode) insn;
                 if (min.owner.equals("com/google/common/collect/ImmutableList$Builder") && min.name.equals("add")
                     && min.desc.equals("(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;")) {
@@ -33,12 +33,12 @@ public class FMLCommonHandlerTransformer extends ClassTransformer {
 
         if (lastAdd != null) {
             InsnList toInject = new InsnList();
-            toInject.add(new VarInsnNode(Opcodes.ALOAD, 1));
+            toInject.add(new VarInsnNode(ALOAD, 1));
 
             toInject.add(
                 new MethodInsnNode(
-                    Opcodes.INVOKESTATIC,
-                    "com/midnight/liteloaderloader/core/transformers/FMLCommonHandlerTransformer",
+                    INVOKESTATIC,
+                    "com/midnight/liteloaderloader/core/transformers/forge/FMLCommonHandlerTransformer",
                     "addBranding",
                     "(Lcom/google/common/collect/ImmutableList$Builder;)V",
                     false));
