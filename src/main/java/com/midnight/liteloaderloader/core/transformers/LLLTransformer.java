@@ -11,6 +11,8 @@ import com.midnight.liteloaderloader.core.LiteloaderLoader;
 import com.midnight.liteloaderloader.core.transformers.compat.AngelicaHUDCachingTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.InputHandlerTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.VoxelCommonLiteModTransformer;
+import com.midnight.liteloaderloader.core.transformers.forge.FMLCommonHandlerTransformer;
+import com.midnight.liteloaderloader.core.transformers.forge.GuiModListTransformer;
 import com.midnight.liteloaderloader.core.transformers.loadingbar.LoadingBarTransformer;
 import com.midnight.liteloaderloader.core.transformers.loadingbar.ObjectFactoryClientTransformer;
 

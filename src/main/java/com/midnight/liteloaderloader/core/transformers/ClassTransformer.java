@@ -7,12 +7,13 @@ import java.util.function.Consumer;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import com.midnight.liteloaderloader.core.SafeClassWriter;
 
-public abstract class ClassTransformer {
+public abstract class ClassTransformer implements Opcodes {
 
     // Map of method names to transformation functions, where each function takes a MethodNode
     // and modifies it in place. Should be populated in the constructor of subclasses.

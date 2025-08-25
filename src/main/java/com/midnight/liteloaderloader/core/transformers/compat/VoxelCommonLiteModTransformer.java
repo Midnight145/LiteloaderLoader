@@ -1,6 +1,5 @@
 package com.midnight.liteloaderloader.core.transformers.compat;
 
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -30,7 +29,7 @@ public class VoxelCommonLiteModTransformer extends ClassTransformer {
     private void transformInit(MethodNode methodNode) {
         for (AbstractInsnNode node : methodNode.instructions.toArray()) {
             if (node instanceof MethodInsnNode methodInsnNode) {
-                if (methodInsnNode.getOpcode() == Opcodes.INVOKESTATIC) {
+                if (methodInsnNode.getOpcode() == INVOKESTATIC) {
                     if (methodInsnNode.name.equals("getenv")) {
                         methodInsnNode.name = "getProperty";
                     }
