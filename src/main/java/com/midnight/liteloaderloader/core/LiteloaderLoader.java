@@ -20,6 +20,7 @@ public class LiteloaderLoader implements IFMLLoadingPlugin {
     public static boolean angelicaEventCompat = true;
     public static boolean voxelCommonNixCompat = true;
     public static boolean macroKeybindModLogSpam = true;
+    public static boolean addToForgeCounts = false;
 
     public static Logger LOG = LogManager.getLogger("LiteloaderLoader");
 
@@ -49,6 +50,11 @@ public class LiteloaderLoader implements IFMLLoadingPlugin {
             Configuration.CATEGORY_GENERAL,
             true,
             "Patches Macro Keybind Mod to reduce log spam due to missing fields in lwjgl3.");
+        addToForgeCounts = config.getBoolean(
+            "addToModList",
+            Configuration.CATEGORY_GENERAL,
+            true,
+            "If true, LiteLoader mods will be added to both the ingame Forge modlist and mod counts on the main menu.");
 
         try {
             Mouse.class.getDeclaredField("readBuffer");
