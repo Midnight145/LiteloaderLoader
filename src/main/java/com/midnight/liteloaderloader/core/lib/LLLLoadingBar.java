@@ -5,7 +5,7 @@ import com.mumfrey.liteloader.core.LiteLoaderMods;
 
 import cpw.mods.fml.common.ProgressManager;
 
-@SuppressWarnings({"unused", "deprecation"}) // called via ASM
+@SuppressWarnings({ "unused", "deprecation" }) // called via ASM
 public class LLLLoadingBar extends LoadingBar {
 
     private String message = "";
@@ -58,7 +58,8 @@ public class LLLLoadingBar extends LoadingBar {
 
     private int getModCount() {
         LiteLoaderMods mods = ReflectionHelper.getLiteLoaderMods();
-        return mods.getAllMods().size();
+        return mods.getAllMods()
+            .size();
     }
 
     private String formatMessage(String message) {
