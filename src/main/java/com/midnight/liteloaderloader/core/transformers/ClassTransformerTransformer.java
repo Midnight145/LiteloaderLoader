@@ -2,7 +2,6 @@ package com.midnight.liteloaderloader.core.transformers;
 
 import static com.midnight.liteloaderloader.core.LiteloaderLoader.LOG;
 
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
