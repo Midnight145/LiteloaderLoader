@@ -54,6 +54,14 @@ public class LLLTransformer implements IClassTransformer {
         transformations.put(
             "com.mumfrey.liteloader.client.gui.startup.LoadingBar",
             bytes -> new LoadingBarTransformer().apply(bytes, LiteloaderLoader.overrideProgressBar));
+
+        // If configured, add LiteLoader mods to the Forge mod list and add branding for LiteLoader mod count
+        transformations.put(
+            "cpw.mods.fml.client.GuiModList",
+            bytes -> new GuiModListTransformer().apply(bytes, LiteloaderLoader.addToForgeCounts));
+        transformations.put(
+            "cpw.mods.fml.common.FMLCommonHandler",
+            bytes -> new FMLCommonHandlerTransformer().apply(bytes, LiteloaderLoader.addToForgeCounts));
     }
 
     @Override

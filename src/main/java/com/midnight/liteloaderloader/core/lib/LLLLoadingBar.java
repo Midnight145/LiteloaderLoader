@@ -1,44 +1,12 @@
 package com.midnight.liteloaderloader.core.lib;
 
-import java.lang.reflect.Field;
-import java.util.LinkedList;
-
 import com.mumfrey.liteloader.client.gui.startup.LoadingBar;
-import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.core.LiteLoaderMods;
 
 import cpw.mods.fml.common.ProgressManager;
 
-@SuppressWarnings("unused") // called via ASM
+@SuppressWarnings({ "unused", "deprecation" }) // called via ASM
 public class LLLLoadingBar extends LoadingBar {
-
-    private static final Field modsField;
-    private static final Field initModsField;
-
-    private static final Field stepsField;
-
-    static {
-        try {
-            modsField = LiteLoader.class.getDeclaredField("mods");
-            modsField.setAccessible(true);
-
-            initModsField = LiteLoaderMods.class.getDeclaredField("allMods");
-            initModsField.setAccessible(true);
-
-            stepsField = ProgressManager.ProgressBar.class.getDeclaredField("steps");
-            stepsField.setAccessible(true);
-
-            try {
-                Field modifiers = Field.class.getDeclaredField("modifiers");
-                modifiers.setAccessible(true);
-                modifiers.setInt(stepsField, stepsField.getModifiers() & ~java.lang.reflect.Modifier.FINAL);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                // If the modifiers field doesn't exist, we can ignore it. Java 9+ removed it.
-            }
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private String message = "";
     private int modCount = 0;
@@ -72,7 +40,7 @@ public class LLLLoadingBar extends LoadingBar {
             }
             int newModCount = this.getModCount();
             if (newModCount != this.modCount) {
-                this.setSteps(progressBar, newModCount);
+                ReflectionHelper.setProgressBarSteps(progressBar, newModCount);
                 this.modCount = this.getModCount();
             }
             progressBar.step(formatMessage(message));
@@ -89,11 +57,9 @@ public class LLLLoadingBar extends LoadingBar {
     }
 
     private int getModCount() {
-        try {
-            return ((LinkedList) initModsField.get(modsField.get(LiteLoader.getInstance()))).size();
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        LiteLoaderMods mods = ReflectionHelper.getLiteLoaderMods();
+        return mods.getAllMods()
+            .size();
     }
 
     private String formatMessage(String message) {
@@ -103,13 +69,5 @@ public class LLLLoadingBar extends LoadingBar {
             formattedMessage = formattedMessage.replaceAll(regex, "$1");
         }
         return formattedMessage;
-    }
-
-    private void setSteps(ProgressManager.ProgressBar progressBar, int steps) {
-        try {
-            stepsField.set(progressBar, steps);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
