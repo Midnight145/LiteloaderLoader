@@ -4,7 +4,14 @@ This mod is a transformer and reimplementation of part of Liteloader for 1.7.10 
 
 ## Information
 
-Liteloader's use of COMPUTE_FRAMES in its class transforming is unsafe, occasionally loading classes that are not fully initialized. I replace LiteLoader's usage of ObjectWeb's ClassWriter with my own SafeClassWriter, which ensures safe frame computation.
+Liteloader's use of COMPUTE_FRAMES in its class transforming is unsafe, occasionally loading classes that are not fully initialized. This replaces LiteLoader's usage of ObjectWeb's ClassWriter with a custom SafeClassWriter, which ensures safe frame computation.
+
+Additionally, it replaces LiteLoader's progress bar with a Forge progress bar, as the LiteLoader implementation has graphical issues alongside Forge.
+
+This also fixes the following compatibility issues with other mods:
+- Any mod extending from VoxelCommonLiteMod on non-Windows platforms, replacing its use of the TEMP environment variable with java.io.tmpdir.
+- Angelica's HUD Caching module not throwing several pre/postrender events causing mods like VoxelMap not to render.
+- Macro Keybind Mod spamming the logfile with errors under lwjgl3ify due to missing fields.
 
 **Note:** This is **not** a full replacement for Liteloader, it is designed to run alongside it. You still need Liteloader itself.
 

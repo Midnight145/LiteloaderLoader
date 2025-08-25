@@ -42,4 +42,8 @@ public abstract class ClassTransformer {
         node.accept(writer);
         return writer.toByteArray();
     }
+
+    public byte[] apply(byte[] classBytes, boolean load) {
+        return load ? apply(classBytes) : classBytes;
+    }
 }
