@@ -9,12 +9,13 @@ import com.mumfrey.liteloader.core.LiteLoaderMods;
 
 import cpw.mods.fml.common.ProgressManager;
 
+@SuppressWarnings("unused") // called via ASM
 public class LLLLoadingBar extends LoadingBar {
 
-    private static Field modsField;
-    private static Field initModsField;
+    private static final Field modsField;
+    private static final Field initModsField;
 
-    private static Field stepsField;
+    private static final Field stepsField;
 
     static {
         try {
@@ -69,8 +70,9 @@ public class LLLLoadingBar extends LoadingBar {
                 this.modCount = this.getModCount();
                 progressBar = ProgressManager.push("LiteLoader: Initializing", this.modCount, false);
             }
-            if (this.getModCount() != this.modCount) {
-                this.setSteps(progressBar, this.getModCount());
+            int newModCount = this.getModCount();
+            if (newModCount != this.modCount) {
+                this.setSteps(progressBar, newModCount);
                 this.modCount = this.getModCount();
             }
             progressBar.step(formatMessage(message));
