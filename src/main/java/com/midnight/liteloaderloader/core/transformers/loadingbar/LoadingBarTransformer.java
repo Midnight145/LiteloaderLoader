@@ -1,9 +1,10 @@
 package com.midnight.liteloaderloader.core.transformers.loadingbar;
 
-import com.midnight.liteloaderloader.core.transformers.ClassTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodNode;
+
+import com.midnight.liteloaderloader.core.transformers.ClassTransformer;
 
 public class LoadingBarTransformer extends ClassTransformer {
 

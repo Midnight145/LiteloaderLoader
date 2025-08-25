@@ -1,11 +1,12 @@
 package com.midnight.liteloaderloader.core.transformers.loadingbar;
 
-import com.midnight.liteloaderloader.core.transformers.ClassTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
+
+import com.midnight.liteloaderloader.core.transformers.ClassTransformer;
 
 public class ObjectFactoryClientTransformer extends ClassTransformer {
 
