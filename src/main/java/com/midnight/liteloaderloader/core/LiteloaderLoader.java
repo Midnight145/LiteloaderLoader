@@ -55,7 +55,7 @@ public class LiteloaderLoader implements IFMLLoadingPlugin {
             "voxelMapKeyRepeatFix",
             Configuration.CATEGORY_GENERAL,
             true,
-            "Patches Voxel Map Mod to make the hotkeys running well in lwjgl3.");
+            "Patches VoxelMap to fix repeated hotkeys under LWJGL3ify and Java 17+.");
         addToForgeCounts = config.getBoolean(
             "addToModList",
             Configuration.CATEGORY_GENERAL,
@@ -63,6 +63,7 @@ public class LiteloaderLoader implements IFMLLoadingPlugin {
             "If true, LiteLoader mods will be added to both the ingame Forge modlist and mod counts on the main menu.");
 
         try {
+            // lwjgl2-only fields, so we force-disable lwjgl3-only patches
             Mouse.class.getDeclaredField("readBuffer");
             Keyboard.class.getDeclaredField("readBuffer");
             macroKeybindModLogSpam = false;

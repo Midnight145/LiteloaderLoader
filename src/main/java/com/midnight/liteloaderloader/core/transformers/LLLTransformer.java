@@ -11,9 +11,7 @@ import com.midnight.liteloaderloader.core.LiteloaderLoader;
 import com.midnight.liteloaderloader.core.transformers.compat.AngelicaHUDCachingTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.InputHandlerTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.VoxelCommonLiteModTransformer;
-import com.midnight.liteloaderloader.core.transformers.compat.VoxelMapMenuKeyRepeatTransformer;
-import com.midnight.liteloaderloader.core.transformers.compat.VoxelMapNewWayPointKeyRepeatTransformer;
-import com.midnight.liteloaderloader.core.transformers.compat.VoxelMapWayPointMenuKeyRepeatTransformer;
+import com.midnight.liteloaderloader.core.transformers.compat.VoxelMapKeyRepeatTransformer;
 import com.midnight.liteloaderloader.core.transformers.forge.FMLCommonHandlerTransformer;
 import com.midnight.liteloaderloader.core.transformers.forge.GuiModListTransformer;
 import com.midnight.liteloaderloader.core.transformers.loadingbar.LoadingBarTransformer;
@@ -60,17 +58,20 @@ public class LLLTransformer implements IClassTransformer {
             "com.mumfrey.liteloader.client.gui.startup.LoadingBar",
             bytes -> new LoadingBarTransformer().apply(bytes, LiteloaderLoader.overrideProgressBar));
 
-        // it makes the hotkeys run as before when with lwjgl3ify mod and java17+
+        // VoxelMap hotkeys repeat under LWJGL3ify and Java 17+. We add a grace period after each key press to help
+        // avoid this.
         transformations.put(
+            // menu hotkey
             "com.thevoxelbox.voxelmap.b.l",
-            bytes -> new VoxelMapMenuKeyRepeatTransformer().apply(bytes, LiteloaderLoader.voxelMapKeyRepeatFix));
+            bytes -> new VoxelMapKeyRepeatTransformer().apply(bytes, LiteloaderLoader.voxelMapKeyRepeatFix));
         transformations.put(
+            // new waypoint hotkey
             "com.thevoxelbox.voxelmap.a.a",
-            bytes -> new VoxelMapNewWayPointKeyRepeatTransformer().apply(bytes, LiteloaderLoader.voxelMapKeyRepeatFix));
+            bytes -> new VoxelMapKeyRepeatTransformer().apply(bytes, LiteloaderLoader.voxelMapKeyRepeatFix));
         transformations.put(
+            // waypoint menu hotkey
             "com.thevoxelbox.voxelmap.a.u",
-            bytes -> new VoxelMapWayPointMenuKeyRepeatTransformer()
-                .apply(bytes, LiteloaderLoader.voxelMapKeyRepeatFix));
+            bytes -> new VoxelMapKeyRepeatTransformer().apply(bytes, LiteloaderLoader.voxelMapKeyRepeatFix));
 
         // If configured, add LiteLoader mods to the Forge mod list and add branding for LiteLoader mod count
         transformations.put(

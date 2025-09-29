@@ -10,46 +10,34 @@ import org.objectweb.asm.tree.MethodNode;
 
 import com.midnight.liteloaderloader.core.transformers.ClassTransformer;
 
-public class VoxelMapMenuKeyRepeatTransformer extends ClassTransformer {
+public class VoxelMapKeyRepeatTransformer extends ClassTransformer {
 
     private static final long cushionTime = 500_000L;
     private static long enterTime = 0L;
     private static boolean enterTrigger = false;
 
-    public VoxelMapMenuKeyRepeatTransformer() {
+    public VoxelMapKeyRepeatTransformer() {
         super();
         methodTransforms.put("m", this::m);
         methodTransforms.put("a", this::a);
     }
 
-    public static void closeBefore() {
-        enterTrigger = false;
-    }
-
     private void m(MethodNode methodNode) {
         InsnList insert = new InsnList();
         /*
-         * com.midnight.liteloaderloader.core.transformers.compat.VoxelMapMenuKeyRepeatTransformer.closeBefore()
+         * com.midnight.liteloaderloader.core.transformers.compat.VoxelMapKeyRepeatTransformer.closeBefore()
          */
         {
             insert.add(
                 new MethodInsnNode(
                     Opcodes.INVOKESTATIC,
-                    "com/midnight/liteloaderloader/core/transformers/compat/VoxelMapMenuKeyRepeatTransformer",
+                    "com/midnight/liteloaderloader/core/transformers/compat/VoxelMapKeyRepeatTransformer",
                     "closeBefore",
                     "()V",
                     false));
         }
 
         methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), insert);
-    }
-
-    public static boolean inputBefore() {
-        if (!enterTrigger) {
-            enterTime = System.nanoTime();
-            enterTrigger = true;
-        }
-        return System.nanoTime() > enterTime + cushionTime;
     }
 
     private void a(MethodNode method) {
@@ -59,7 +47,7 @@ public class VoxelMapMenuKeyRepeatTransformer extends ClassTransformer {
             InsnList insert = new InsnList();
             /*
              * if
-             * (!com.midnight.liteloaderloader.core.transformers.compat.VoxelMapMenuKeyRepeatTransformer.inputBefore())
+             * (!com.midnight.liteloaderloader.core.transformers.compat.VoxelMapKeyRepeatTransformer.inputBefore())
              * {
              * return;
              * }
@@ -68,7 +56,7 @@ public class VoxelMapMenuKeyRepeatTransformer extends ClassTransformer {
                 insert.add(
                     new MethodInsnNode(
                         Opcodes.INVOKESTATIC,
-                        "com/midnight/liteloaderloader/core/transformers/compat/VoxelMapMenuKeyRepeatTransformer",
+                        "com/midnight/liteloaderloader/core/transformers/compat/VoxelMapKeyRepeatTransformer",
                         "inputBefore",
                         "()Z",
                         false));
@@ -81,5 +69,19 @@ public class VoxelMapMenuKeyRepeatTransformer extends ClassTransformer {
 
             method.instructions.insertBefore(method.instructions.getFirst(), insert);
         }
+    }
+
+    @SuppressWarnings("unused") // called by the injected code
+    public static void closeBefore() {
+        enterTrigger = false;
+    }
+
+    @SuppressWarnings("unused") // called by the injected code
+    public static boolean inputBefore() {
+        if (!enterTrigger) {
+            enterTime = System.nanoTime();
+            enterTrigger = true;
+        }
+        return System.nanoTime() > enterTime + cushionTime;
     }
 }
