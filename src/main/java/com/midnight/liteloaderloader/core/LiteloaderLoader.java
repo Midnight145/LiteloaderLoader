@@ -20,6 +20,7 @@ public class LiteloaderLoader implements IFMLLoadingPlugin {
     public static boolean angelicaEventCompat = true;
     public static boolean voxelCommonNixCompat = true;
     public static boolean macroKeybindModLogSpam = true;
+    public static boolean voxelMapKeyRepeatFix = true;
     public static boolean addToForgeCounts = false;
 
     public static Logger LOG = LogManager.getLogger("LiteloaderLoader");
@@ -50,6 +51,11 @@ public class LiteloaderLoader implements IFMLLoadingPlugin {
             Configuration.CATEGORY_GENERAL,
             true,
             "Patches Macro Keybind Mod to reduce log spam due to missing fields in lwjgl3.");
+        voxelMapKeyRepeatFix = config.getBoolean(
+            "voxelMapKeyRepeatFix",
+            Configuration.CATEGORY_GENERAL,
+            true,
+            "Patches Voxel Map Mod to make the hotkeys running well in lwjgl3.");
         addToForgeCounts = config.getBoolean(
             "addToModList",
             Configuration.CATEGORY_GENERAL,
@@ -60,6 +66,7 @@ public class LiteloaderLoader implements IFMLLoadingPlugin {
             Mouse.class.getDeclaredField("readBuffer");
             Keyboard.class.getDeclaredField("readBuffer");
             macroKeybindModLogSpam = false;
+            voxelMapKeyRepeatFix = false;
         } catch (NoSuchFieldException ignored) {}
         if (config.hasChanged()) {
             config.save();
