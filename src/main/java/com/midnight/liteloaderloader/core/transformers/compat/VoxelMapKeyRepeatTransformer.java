@@ -1,5 +1,6 @@
 package com.midnight.liteloaderloader.core.transformers.compat;
 
+import com.midnight.liteloaderloader.core.LiteloaderLoader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
@@ -12,7 +13,7 @@ import com.midnight.liteloaderloader.core.transformers.ClassTransformer;
 
 public class VoxelMapKeyRepeatTransformer extends ClassTransformer {
 
-    private static final long cushionTime = 500_000L;
+    private static final long cushionTime = LiteloaderLoader.voxelMapKeyRepeatBufferTime;
     private static long enterTime = 0L;
     private static boolean enterTrigger = false;
 
