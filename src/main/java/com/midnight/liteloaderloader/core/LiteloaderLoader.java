@@ -20,7 +20,9 @@ public class LiteloaderLoader implements IFMLLoadingPlugin {
     public static boolean angelicaEventCompat = true;
     public static boolean voxelCommonNixCompat = true;
     public static boolean macroKeybindModLogSpam = true;
+    public static boolean voxelMapKeyRepeatFix = true;
     public static boolean addToForgeCounts = false;
+    public static long voxelMapKeyRepeatBufferTime;
 
     public static Logger LOG = LogManager.getLogger("LiteloaderLoader");
 
@@ -50,6 +52,19 @@ public class LiteloaderLoader implements IFMLLoadingPlugin {
             Configuration.CATEGORY_GENERAL,
             true,
             "Patches Macro Keybind Mod to reduce log spam due to missing fields in lwjgl3.");
+        voxelMapKeyRepeatFix = config.getBoolean(
+            "voxelMapKeyRepeatFix",
+            Configuration.CATEGORY_GENERAL,
+            true,
+            "Patches VoxelMap to fix repeated hotkeys under LWJGL3ify and Java 17+.");
+        voxelMapKeyRepeatBufferTime = config.getInt(
+            "voxelMapKeyRepeatBufferTime",
+            Configuration.CATEGORY_GENERAL,
+            250_000,
+            0,
+            Integer.MAX_VALUE,
+            "The amount of time in nanoseconds to ignore repeated VoxelMap hotkey presses. Increase this if you still see repeated hotkeys, decrease it if you find the hotkeys unresponsive.");
+
         addToForgeCounts = config.getBoolean(
             "addToModList",
             Configuration.CATEGORY_GENERAL,
@@ -57,9 +72,11 @@ public class LiteloaderLoader implements IFMLLoadingPlugin {
             "If true, LiteLoader mods will be added to both the ingame Forge modlist and mod counts on the main menu.");
 
         try {
+            // lwjgl2-only fields, so we force-disable lwjgl3-only patches
             Mouse.class.getDeclaredField("readBuffer");
             Keyboard.class.getDeclaredField("readBuffer");
             macroKeybindModLogSpam = false;
+            voxelMapKeyRepeatFix = false;
         } catch (NoSuchFieldException ignored) {}
         if (config.hasChanged()) {
             config.save();
