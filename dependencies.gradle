@@ -35,6 +35,7 @@
  */
 dependencies {
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.7.69-GTNH:dev")
+    compile("com.github.GTNewHorizons:Controlling:2.1.2:dev@jar")
     implementation(files("libs/liteloader-stub-1.0.5.jar"))
 //    implementation(files("libs/liteloader-deobfuscated.jar"))
 //    obfuscatedRuntimeClasspath(files("libs/liteloader-1.7.10.jar"))
