@@ -10,6 +10,7 @@ import net.minecraft.launchwrapper.IClassTransformer;
 import com.midnight.liteloaderloader.core.LiteloaderLoader;
 import com.midnight.liteloaderloader.core.transformers.compat.AngelicaHUDCachingTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.InputHandlerTransformer;
+import com.midnight.liteloaderloader.core.transformers.compat.MacroModCoreTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.VoxelCommonLiteModTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.VoxelMapKeyRepeatTransformer;
 import com.midnight.liteloaderloader.core.transformers.forge.FMLCommonHandlerTransformer;
@@ -80,6 +81,10 @@ public class LLLTransformer implements IClassTransformer {
         transformations.put(
             "cpw.mods.fml.common.FMLCommonHandler",
             bytes -> new FMLCommonHandlerTransformer().apply(bytes, LiteloaderLoader.addToForgeCounts));
+
+        // MacroKeybindMod crashes with Controlling due to Controlling replacing GuiControls and GuiKeyBindingList.
+        transformations
+            .put("net.eq2online.macros.core.MacroModCore", bytes -> new MacroModCoreTransformer().apply(bytes, true));
     }
 
     @Override
