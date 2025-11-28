@@ -6,7 +6,6 @@ import org.objectweb.asm.tree.MethodNode;
 
 import com.midnight.liteloaderloader.core.transformers.ClassTransformer;
 
-
 public class MacroModCoreTransformer extends ClassTransformer {
 
     public MacroModCoreTransformer() {

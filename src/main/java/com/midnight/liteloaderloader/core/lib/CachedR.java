@@ -2,6 +2,7 @@
 
 package com.midnight.liteloaderloader.core.lib;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,9 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CachedR {
 
-    private static final Map<Class<?>, ConcurrentHashMap<String, Field>> FIELDS = Collections
+    private static final Map<Class<?>, ConcurrentHashMap<String, WeakReference<Field>>> FIELDS = Collections
         .synchronizedMap(new WeakHashMap<>());
-    private static final Map<Class<?>, ConcurrentHashMap<MethodInfo, Method>> METHODS = Collections
+    private static final Map<Class<?>, ConcurrentHashMap<MethodInfo, WeakReference<Method>>> METHODS = Collections
         .synchronizedMap(new WeakHashMap<>());
 
     private static boolean oldJavaCompat = false;
@@ -71,18 +72,20 @@ public class CachedR {
     private Field findField(String name, Class<?> clazz) throws NoSuchFieldException {
         if (clazz == null) throw new NoSuchFieldException();
 
-        ConcurrentHashMap<String, Field> classCache;
+        ConcurrentHashMap<String, WeakReference<Field>> classCache;
 
         // WeakHashMap isn't thread safe, but we need it to avoid strong Class references
         synchronized (FIELDS) {
-            classCache = FIELDS.get(clazz);
-            if (classCache == null) {
-                classCache = new ConcurrentHashMap<>();
-                FIELDS.put(clazz, classCache);
-            }
+            classCache = FIELDS.computeIfAbsent(clazz, k -> new ConcurrentHashMap<>());
         }
-        Field cached = classCache.get(name);
-        if (cached != null) return cached;
+        WeakReference<Field> cached = classCache.get(name);
+        if (cached != null) {
+            Field field = cached.get();
+            if (field != null) {
+                return field;
+            }
+            classCache.remove(name);
+        }
 
         Field field;
         try {
@@ -91,7 +94,7 @@ public class CachedR {
             field = findField(name, clazz.getSuperclass());
         }
         field.setAccessible(true);
-        classCache.put(name, field);
+        classCache.put(name, new WeakReference<>(field));
         return field;
     }
 
@@ -100,17 +103,19 @@ public class CachedR {
         if (clazz == null) throw new NoSuchMethodException();
 
         MethodInfo key = new MethodInfo(name, argTypes);
-        ConcurrentHashMap<MethodInfo, Method> classCache;
+        ConcurrentHashMap<MethodInfo, WeakReference<Method>> classCache;
 
         synchronized (METHODS) {
-            classCache = METHODS.get(clazz);
-            if (classCache == null) {
-                classCache = new ConcurrentHashMap<>();
-                METHODS.put(clazz, classCache);
-            }
+            classCache = METHODS.computeIfAbsent(clazz, k -> new ConcurrentHashMap<>());
         }
-        Method cached = classCache.get(key);
-        if (cached != null) return cached;
+        WeakReference<Method> cached = classCache.get(key);
+        if (cached != null) {
+            Method method = cached.get();
+            if (method != null) {
+                return method;
+            }
+            classCache.remove(key);
+        }
 
         Method method;
         try {
@@ -119,7 +124,7 @@ public class CachedR {
             method = findMethod(name, clazz.getSuperclass(), argTypes);
         }
         method.setAccessible(true);
-        classCache.put(key, method);
+        classCache.put(key, new WeakReference<>(method));
         return method;
     }
 
@@ -211,6 +216,7 @@ public class CachedR {
 
 // Helper class for caching method lookups
 class MethodInfo {
+
     public final String name;
     public final Class<?>[] argTypes;
 
