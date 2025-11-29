@@ -9,7 +9,8 @@ Liteloader's use of COMPUTE_FRAMES in its class transforming is unsafe, occasion
 Other fixes:
 - Any mod extending from VoxelCommonLiteMod on non-Windows platforms, replacing its use of the TEMP environment variable with java.io.tmpdir.
 - Angelica's HUD Caching module not throwing several pre/postrender events causing mods like VoxelMap not to render.
-- Macro Keybind Mod spamming the logfile with errors under lwjgl3ify due to missing fields.
+- Macro Keybind Mod spamming the logfile with errors under lwjgl3ify due to missing fields.\
+- Macro Keybind Mod compatibility with Controlling
 
 Other minor changes or improvements:
 - The LiteLoader progress bar has been reimplemented with a Forge progress bar while modloading.
@@ -31,8 +32,3 @@ See [INSTALLATION.md](./INSTALLATION.md)
 
 - For some reason, Liteloader unsets the final field on all fields in Block.class and Item.class. I'm not sure if this is necessary, so currently I'm not doing it.
 - Liteloader standalone installs, as opposed to being loaded via Forge as a mod.
-
-## Known Issues
-
-- Occasionally, the game will hang on startup. This can be resolved by restarting the game, though in rare cases it may take multiple tries.
-- There's some progress bar jankiness on startup, but this is not a major issue and should not affect gameplay.
