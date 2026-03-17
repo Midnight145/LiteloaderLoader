@@ -77,7 +77,7 @@ public class LiteloaderLoader implements IFMLLoadingPlugin {
             Keyboard.class.getDeclaredField("readBuffer");
             macroKeybindModLogSpam = false;
             voxelMapKeyRepeatFix = false;
-        } catch (NoSuchFieldException ignored) {}
+        } catch (NoSuchFieldException | NoClassDefFoundError ignored) {}
         if (config.hasChanged()) {
             config.save();
         }
