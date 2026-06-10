@@ -17,7 +17,6 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 public class LiteloaderLoader implements IFMLLoadingPlugin {
 
     public static boolean overrideProgressBar = true;
-    public static boolean angelicaEventCompat = true;
     public static boolean voxelCommonNixCompat = true;
     public static boolean macroKeybindModLogSpam = true;
     public static boolean voxelMapKeyRepeatFix = true;
@@ -37,11 +36,6 @@ public class LiteloaderLoader implements IFMLLoadingPlugin {
             Configuration.CATEGORY_GENERAL,
             true,
             "If true, LiteLoader's progress bar will be replaced with a custom implementation that works better with Forge.");
-        angelicaEventCompat = config.getBoolean(
-            "angelicaEventCompat",
-            Configuration.CATEGORY_GENERAL,
-            true,
-            "Fixes Angelica's HUD Caching module to ensure some events are fired correctly. This is required for VoxelMap and possibly other mods.");
         voxelCommonNixCompat = config.getBoolean(
             "voxelCommonNixCompat",
             Configuration.CATEGORY_GENERAL,
