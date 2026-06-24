@@ -16,14 +16,14 @@ public class AngelicaEventHandler {
 
         switch (liteloaderEvent.event) {
             case PRE_RENDER_GUI -> CallbackProxyClient.preRenderGUI(
-                new EventInfo<>("prerendergui", (EntityRenderer) liteloaderEvent.params[0], false),
-                (Float) liteloaderEvent.params[1]);
+                new EventInfo<>("prerendergui", liteloaderEvent.renderer, false),
+                liteloaderEvent.partialTicks);
             case PRE_RENDER_HUD -> CallbackProxyClient.postRenderHUD(
-                new EventInfo<>("prerenderhud", (EntityRenderer) liteloaderEvent.params[0], false),
-                (Float) liteloaderEvent.params[1]);
+                new EventInfo<>("prerenderhud", liteloaderEvent.renderer, false),
+                liteloaderEvent.partialTicks);
             case POST_RENDER_HUD -> CallbackProxyClient.postRenderHUD(
-                new EventInfo<>("postrenderhud", (EntityRenderer) liteloaderEvent.params[0], false),
-                (Float) liteloaderEvent.params[1]);
+                new EventInfo<>("postrenderhud", liteloaderEvent.renderer, false),
+                liteloaderEvent.partialTicks);
             case ON_TICK -> CallbackProxyClient.onTick(new EventInfo<>("ontick", Minecraft.getMinecraft(), false));
         }
     };
