@@ -8,7 +8,6 @@ import java.util.function.Function;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 import com.midnight.liteloaderloader.core.LiteloaderLoader;
-import com.midnight.liteloaderloader.core.transformers.compat.AngelicaHUDCachingTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.InputHandlerTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.MacroModCoreTransformer;
 import com.midnight.liteloaderloader.core.transformers.compat.VoxelCommonLiteModTransformer;
@@ -31,12 +30,6 @@ public class LLLTransformer implements IClassTransformer {
         transformations.put(
             "com.mumfrey.liteloader.transformers.ClassTransformer",
             bytes -> new ClassTransformerTransformer().apply(bytes));
-
-        // Angelica's HUD Caching option overrides EntityRenderer.updateCameraAndRender, which is used for several
-        // events. We need to apply this transformer to it to call throw events ourselves.
-        transformations.put(
-            "com.gtnewhorizons.angelica.hudcaching.HUDCaching",
-            bytes -> new AngelicaHUDCachingTransformer().apply(bytes, LiteloaderLoader.angelicaEventCompat));
 
         // VoxelCommonLiteMod uses a hardcoded TEMP environment variable, which only exists on Windows.
         // We replace it with java.io.tmpdir property, which is the standard temporary directory for Java.
