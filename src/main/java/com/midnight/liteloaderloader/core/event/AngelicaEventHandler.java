@@ -3,7 +3,6 @@ package com.midnight.liteloaderloader.core.event;
 import java.util.function.Consumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.EntityRenderer;
 
 import com.gtnewhorizons.angelica.event.ClientEvent;
 import com.mumfrey.liteloader.client.CallbackProxyClient;
